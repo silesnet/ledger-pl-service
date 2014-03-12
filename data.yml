@@ -1,0 +1,49 @@
+---
+number: 1234
+dueDate: 2014-02-13
+totalAmount:
+customer:
+  name: Cust 1
+  address: Address 1
+lines:
+  - item:
+    unitPrice:
+    quantity:
+    price:
+  - item:  Item 1/2
+    unitPrice:
+    quantity:
+    price:
+---
+number: 1235
+dueDate:
+totalAmount:
+customer:
+  name: Cust 2
+  address:
+lines:
+  - item:
+    unitPrice:
+    quantity:
+    price:
+  - item:
+    unitPrice:
+    quantity:
+    price:
+---
+number: 1236
+dueDate:
+totalAmount:
+customer:
+  name: Cust 3
+  address:
+lines:
+  - item: Item 3/1
+    unitPrice:
+    quantity:
+    price:
+  - item:  Item 3/2
+    unitPrice:
+    quantity:
+    price: 0
+...
