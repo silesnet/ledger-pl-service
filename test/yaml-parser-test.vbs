@@ -59,5 +59,5 @@ Sub assert(cond, msg)
 End Sub
 
 Sub include(file)
-    ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
+  ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
 End Sub
