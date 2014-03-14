@@ -33,7 +33,7 @@ Do Until input.AtEndOfStream
 Loop
 
 journal.Close
-inputFile.Close
+input.Close
 
 WScript.Quit 0
 
