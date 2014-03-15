@@ -10,7 +10,23 @@ Sub testAll
   testIterator
   testEmptyYaml
   testParsedValues
+  testFetchCollection
   WScript.Echo "PASSED"
+End Sub
+
+Sub testFetchCollection
+  WScript.Echo "# it should fetch collections"
+  Dim yaml
+  Set yaml = yamlOf("test/yaml-fixture.yml")
+  Dim doc
+  Set doc = yaml.nextDocument()
+  Dim lines
+  Set lines = doc.Item("lines")
+  assert lines.Count = 2, "failded to fetch lines"
+  Dim idx
+  For Each idx in lines
+    assert fetch(lines.Item(idx), "item") <> "x", "fetch item"
+  Next
 End Sub
 
 Sub testParsedValues
@@ -48,6 +64,7 @@ Sub testIterator
   Dim doc
   While yaml.hasNext()
     Set doc = yaml.nextDocument()
+    assert Not doc Is Nothing, "document not parsed"
   Wend
 End Sub
 

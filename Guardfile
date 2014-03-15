@@ -6,6 +6,6 @@
 #
 guard :shell do
   watch /(.*).(vbs|yml)/ do  |m|
-   `cscript.exe /Nologo test/yaml-parser-test.vbs`
+    `run-tests.cmd`
   end
 end
