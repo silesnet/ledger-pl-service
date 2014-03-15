@@ -5,7 +5,8 @@
 #   watch(%r{file/path}) { `command(s)` }
 #
 guard :shell do
-  watch /(.*).(vbs|yml)/ do  |m|
+  watch /^(.*)\.(vbs|yml)$/ do  |m|
+    puts m[0]
     `run-tests.cmd`
   end
 end
