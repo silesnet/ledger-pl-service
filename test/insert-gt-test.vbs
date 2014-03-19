@@ -1,13 +1,35 @@
 Option Explicit
 
 include "insert-gt"
+include "map-utils"
 
 testAll
 
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
   testInsertStart
+  testAddInvoice
   WScript.Echo "PASSED"
+End Sub
+
+Sub testAddInvoice
+  WScript.Echo "# it should add invoice"
+  Dim ins, invoice
+  Set ins = insertOf("../Subiekt.xml")
+  Set invoice = CreateObject("Scripting.Dictionary")
+  ' invoice.Add "number", "1017"
+  invoice.Add "customerId", "ABC"
+  invoice.Add "items", CreateObject("Scripting.Dictionary")
+  invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
+  Dim item
+  Set item = invoice.Item("items").Item(0)
+  item.Add "name", "Wireless +"
+  item.Add "unitPrice", 50.12
+  item.Add "quantity", 0.3
+  item.Add "unit", "mies."
+  item.Add "VAT", 100002
+  WScript.Echo dumpMap(invoice, 0)
+  ins.addInvoice(invoice)
 End Sub
 
 Sub testInsertStart
