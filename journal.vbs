@@ -2,12 +2,12 @@ Option Explicit
 
 Function journalOf(output)
   Dim journal
-  Set journal = new Journal
+  Set journal = new JournalClass
   journal.setOutput output
   Set journalOf = journal
 End Function
 
-Class Journal
+Class JournalClass
   Private isInitialized
   Private output
 
