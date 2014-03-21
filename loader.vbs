@@ -9,7 +9,8 @@ End Function
 
 Class LoaderClass
   Private isConfigured
-  Private output
+  Private source
+  Private sink
 
   Private Sub Class_Initialize
     debug "creating loader"
@@ -17,22 +18,18 @@ Class LoaderClass
   End Sub
 
   Private Sub Class_Terminate
-    debug "destroying journal"
+    debug "destroying loader"
     If isConfigured Then
-      output.Close
-      debug "journal output file closed"
+      ' clean up here
     End If
   End Sub
 
-  Public Sub setOutput(file)
-    debug "initializing journal with '" & file & "'"
+  Public Sub configure(aSource, aSink)
+    debug "initializing loader with source and sink"
     assertNotConfigured
-    Set output = CreateObject("Scripting.FileSystemObject").CreateTextFile(file)
+    source = aSource
+    sink = aSink
     isConfigured = True
-  End Sub
-
-  Public Sub store(record)
-    output.Write record
   End Sub
 
   Private Sub assertNotConfigured
@@ -113,7 +110,7 @@ Function errorMessage
 End Function
 
 Sub storeRecord(message)
-  jrn.store invoices & "|" & invoiceNumber & "|" & message & vbLf 
+  jrn.store invoices & "|" & invoiceNumber & "|" & message & vbLf
   ' If invoices = 1 Then Err.Raise 1000, "checking", "no next"
 End Sub
 
