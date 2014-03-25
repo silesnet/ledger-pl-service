@@ -43,6 +43,12 @@ Class InsertClass
     isInitialized = True
   End Sub
 
+  Public Function validateInvoice(data)
+  End Function
+
+  Public Function validateCustomer(data)
+  End Function
+
   Public Sub addInvoice(data)
     assertInitialized
     Dim invoice, itemIdx, itemObj, itemsCol, invoiceItem
@@ -62,6 +68,10 @@ Class InsertClass
       invoice.Zapisz
       invoice.Zamknij
     Next
+  End Sub
+
+  Public Sub addCustomer(data)
+    assertInitialized
   End Sub
 
   Private Sub assertNotInitialized
