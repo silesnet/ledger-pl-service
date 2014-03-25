@@ -2,12 +2,12 @@ Option Explicit
 
 Function yamlOf(input)
   Dim yaml
-  Set yaml = new YamlParser
+  Set yaml = new YamlParserClass
   yaml.setInput input
   Set yamlOf = yaml
 End Function
 
-Class YamlParser
+Class YamlParserClass
   Private isInitialized
   Private input
   Private currentLine

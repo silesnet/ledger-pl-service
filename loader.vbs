@@ -1,10 +1,10 @@
 Option Explicit
 
-Function loaderOf(source, sink)
-  Dim journal
-  Set journal = new LoaderClass
-  journal.configure source, sink
-  Set journalOf = journal
+Function loaderOf(aSource, aSink, aJournal)
+  Dim loader
+  Set loader = new LoaderClass
+  loader.configure aSource, aSink, aJournal
+  Set loaderOf = loader
 End Function
 
 Class LoaderClass
@@ -30,34 +30,31 @@ Class LoaderClass
   End Sub
 
   Public Sub configure(aSource, aSink, aJournal)
-    debug "initializing loader with source and sink"
+    debug "initializing loader with source, sink and journal"
     assertNotConfigured
-    source = aSource
-    sink = aSink
-    journal = aJournal
+    Set source = aSource
+    Set sink = aSink
+    Set journal = aJournal
     isConfigured = True
   End Sub
 
   Public Sub loadAll()
     assertConfigured
-    debug "loading all documents, expect valid document"
+    debug "loading all documents"
     Dim doc, docId
     On Error Resume Next
     While source.hasNext()
       noFatalError "checking next document"
       Set doc = source.nextDocument()
       noFatalError "reading document"
-      docId = ""
       documents = documents + 1
-      validate(doc)
-      If noError("validating document") Then
-        docId = doc.Item("number")
+      docId = sink.validate(doc)
+      If noError("validating document", docId) Then
         sink.add(doc)
-        If noError("loading document") Then
-          storeRecord("OK")
+        If noError("loading document", docId) Then
+          storeRecord docId, "OK"
           noFatalError "storing journal record"
           loaded = loaded + 1
-          ' debug "  " & invoiceNumber & " OK"
         End If
       End If
       Set doc = Nothing
@@ -81,53 +78,44 @@ Class LoaderClass
     If Not isConfigured Then Err.Raise 2, "Loader", "not configured"
   End Sub
 
+  Sub noFatalError(operation)
+    If Err.Number <> 0 Then
+      WScript.Echo "FATAL error when " & operation & " {" & errorMessage() & "}"
+      WScript.Quit Err.Number
+    End If
+  End Sub
+
+  Function noError(operation, docId)
+    If Err.Number <> 0 Then
+      Dim message
+      message = "FAILED " & failureMessage(operation, docId)
+      On Error Resume Next
+      debug message
+      storeRecord docId, message
+      noFatalError "storing journal record"
+      noError = False
+    Else
+      noError = True
+    End If
+    Err.Clear
+  End Function
+
+  Function failureMessage(operation, docId)
+    Dim idPart
+    idPart =  ""
+    If docId <> "" Then idPart = ", id: '" & docId & "'"
+    failureMessage = operation & " {seq: " & documents & idPart & ", " & errorMessage() & "}"
+  End Function
+
+  Function errorMessage
+    errorMessage = "error: '" & Err.Source & ": " & Err.Description & "'"
+  End Function
+
+  Sub storeRecord(docId, message)
+    journal.store documents & "|" & docId & "|" & message & vbLf
+  End Sub
+
   Private Sub debug(msg)
-    WScript.Echo msg
+    ' WScript.Echo msg
   End Sub
 End Class
-
-Sub noFatalError(operation)
-  If Err.Number <> 0 Then
-    WScript.Echo "FATAL error when " & operation & " {" & errorMessage() & "}"
-    WScript.Quit Err.Number
-  End If
-End Sub
-
-Function noError(operation)
-  If Err.Number <> 0 Then
-    Dim message
-    message = "FAILED " & failureMessage(operation)
-    On Error Resume Next
-    debug message
-    storeRecord(message)
-    noFatalError "storing journal record"
-    noError = False
-  Else
-    noError = True
-  End If
-  Err.Clear
-End Function
-
-Function failureMessage(operation)
-  Dim numberPart
-  numberPart =  ""
-  If invoiceNumber <> "" Then numberPart = ", number: '" & invoiceNumber & "'"
-  failureMessage = operation & " {seq: " & invoices & numberPart & ", " & errorMessage() & "}"
-End Function
-
-Function errorMessage
-  errorMessage = "error: '" & Err.Source & ": " & Err.Description & "'"
-End Function
-
-Sub storeRecord(message)
-  jrn.store invoices & "|" & invoiceNumber & "|" & message & vbLf
-  ' If invoices = 1 Then Err.Raise 1000, "checking", "no next"
-End Sub
-
-Sub debug(msg)
-  WScript.Echo msg
-End Sub
-
-Sub include(file)
-  ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
-End Sub

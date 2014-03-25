@@ -9,12 +9,12 @@ Const gtaUruchomWTle = 4
 
 Function insertOf(config)
   Dim insert
-  Set insert = new Insert
+  Set insert = new InsertClass
   insert.configure(config)
   Set insertOf = insert
 End Function
 
-Class Insert
+Class InsertClass
   Private isInitialized
   Private config
   Private instance

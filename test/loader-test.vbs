@@ -12,13 +12,14 @@ Sub testAll
 End Sub
 
 Sub testLoad
-  WScript.Echo "# it should fetch collections"
-  Dim source, sink, journal
+  WScript.Echo "# it should load all documents"
+  Dim source, sink, journal, loader
   Set source = New SourceClass
   source.configure 1
   Set sink = New SinkClass
   Set journal = New JournalClass
-
+  Set loader = loaderOf(source, sink, journal)
+  loader.loadAll()
 End Sub
 
 Sub assert(cond, msg)
@@ -31,7 +32,6 @@ End Sub
 Sub include(file)
   ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
 End Sub
-
 
 Class SourceClass
   Private size
@@ -53,6 +53,7 @@ Class SourceClass
   Public Function nextDocument()
     Set nextDocument = CreateObject("Scripting.Dictionary")
     nextDocument.Add "seq", current
+    current = current + 1
   End Function
 
 End Class
@@ -64,8 +65,9 @@ Class SinkClass
     count = 0
   End Sub
 
-  Public Sub validate(doc)
-  End Sub
+  Public Function validate(doc)
+    validate = count
+  End Function
 
   Public Sub add(doc)
     count = count + 1
