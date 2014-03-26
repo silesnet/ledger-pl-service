@@ -1,6 +1,6 @@
 Option Explicit
 
-include "journal"
+include "lib/journal"
 
 Dim fs
 Set fs = CreateObject("Scripting.FileSystemObject")

@@ -1,7 +1,7 @@
 Option Explicit
 
-include "loader"
-include "map-utils"
+include "lib/loader"
+include "lib/map-utils"
 
 testAll
 

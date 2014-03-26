@@ -120,7 +120,7 @@ Class InsertClass
   End Sub
 
   Private Sub debug(msg)
-    WScript.Echo msg
+    ' WScript.Echo msg
   End Sub
 
   Sub assert(cond, msg)

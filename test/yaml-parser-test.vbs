@@ -1,7 +1,7 @@
 Option Explicit
 
-include "yaml-parser"
-include "map-utils"
+include "lib/yaml-parser"
+include "lib/map-utils"
 
 testAll
 

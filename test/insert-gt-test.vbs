@@ -1,7 +1,7 @@
 Option Explicit
 
-include "insert-gt"
-include "map-utils"
+include "lib/insert-gt"
+include "lib/map-utils"
 
 testAll
 
@@ -41,7 +41,7 @@ Sub testValidateInvoice
   assertValidInvoice ins, invoice
   id = ins.validateInvoice(invoice)
   assert (id = "1017"), "fetch invoice number"
-  WScript.Echo dumpMap(invoice, 0)
+  ' WScript.Echo dumpMap(invoice, 0)
   invoice.Item("items").Add 1, CreateObject("Scripting.Dictionary")
   assertNotValidInvoice ins, invoice
 End Sub
