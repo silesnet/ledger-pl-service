@@ -44,6 +44,43 @@ Class InsertClass
   End Sub
 
   Public Function validateInvoice(data)
+    assertHasLength data, "number", "invoice number is missing"
+    assertHasLength data, "customerId", "customer id is missing"
+    If data.Exists("items") Then
+      Dim items, itemKey, itemData
+      Set items = data.Item("items")
+      For Each itemKey In items.Keys
+        Set itemData = items.Item(itemKey)
+        assertHasLength itemData, "name", "item name is missing"
+        assertIsNumeric itemData, "unitPrice", "unit price is missing or invalid"
+        assertIsNumeric itemData, "quantity", "quantity is missing or invalid"
+        assertHasLength itemData, "unit", "unit is missing"
+        assertIsNumeric itemData, "vatId", "vatId is missing or invalid"
+      Next
+    End If
+    validateInvoice = data.Item("number")
+  End Function
+
+  Private Sub assertHasLength(data, field, msg)
+    If Not hasLength(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
+  Private Sub assertIsNumeric(data, field, msg)
+    If Not isNumericValue(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
+  Private Function isNumericValue(data, field)
+    isNumericValue = False
+    If data.Exists(field) Then
+      If IsNumeric(data.Item(field)) Then isNumericValue = True
+    End If
+  End Function
+
+  Private Function hasLength(data, field)
+    hasLength = False
+    If data.Exists(field) Then
+      If Len(Trim("" & data.Item(field))) > 0 Then hasLength = True
+    End If
   End Function
 
   Public Function validateCustomer(data)
@@ -64,7 +101,7 @@ Class InsertClass
       invoiceItem.CenaNettoPrzedRabatem = itemObj.Item("unitPrice")
       invoiceItem.IloscJm = itemObj.Item("quantity")
       invoiceItem.Jm = itemObj.Item("unit")
-      invoiceItem.VatId = itemObj.Item("VAT")
+      invoiceItem.VatId = itemObj.Item("vatId")
       invoice.Zapisz
       invoice.Zamknij
     Next
@@ -85,4 +122,12 @@ Class InsertClass
   Private Sub debug(msg)
     WScript.Echo msg
   End Sub
+
+  Sub assert(cond, msg)
+    If Not cond Then
+      debug "FAILED: " & msg
+      Err.Raise 1001, "insert-gt", msg
+    End If
+  End Sub
+
 End Class
