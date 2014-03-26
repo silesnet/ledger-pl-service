@@ -2,8 +2,10 @@ Option Explicit
 
 include "lib/journal"
 
-Dim fs
+Dim fs, tmp
 Set fs = CreateObject("Scripting.FileSystemObject")
+tmp = "test/tmp"
+If Not fs.FolderExists(tmp) Then fs.CreateFolder tmp
 
 testAll
 
@@ -16,19 +18,19 @@ End Sub
 
 Sub testWriteRecord
   WScript.Echo "# it should store record"
-  deleteFile("test/record.jrn")
+  deleteFile("test/tmp/record.jrn")
   Dim journal
-  Set journal = journalOf("test/record.jrn")
+  Set journal = journalOf("test/tmp/record.jrn")
   journal.store("OK")
-  assert fs.OpenTextFile("test/record.jrn").readAll() = "OK", "store record"
+  assert fs.OpenTextFile("test/tmp/record.jrn").readAll() = "OK", "store record"
 End Sub
 
 Sub testOutputFileCreation
   WScript.Echo "# it should create output file"
-  deleteFile("test/test.jrn")
+  deleteFile("test/tmp/test.jrn")
   Dim journal
-  Set journal = journalOf("test/test.jrn")
-  assert fs.FileExists("test/test.jrn"), "read journal"
+  Set journal = journalOf("test/tmp/test.jrn")
+  assert fs.FileExists("test/tmp/test.jrn"), "read journal"
 End Sub
 
 Sub deleteFile(file)
