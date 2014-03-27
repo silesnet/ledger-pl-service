@@ -27,8 +27,8 @@ If Not source.hasNext Then
 End If
 
 debug "configuring InsERT GT with '" & insertGtConfig & "'..."
-' Set insertGt = insertOf(insertGtConfig)
-Set insertGt = New FakeInsertGtClass
+Set insertGt = insertOf(insertGtConfig)
+' Set insertGt = New FakeInsertGtClass
 
 debug "configuring load type with '" & sinkName & "'..."
 Select Case sinkName
