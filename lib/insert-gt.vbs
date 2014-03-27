@@ -131,3 +131,51 @@ Class InsertClass
   End Sub
 
 End Class
+
+Class FakeInsertGtClass
+  Public Function validateInvoice(doc)
+    validateInvoice = 1
+  End Function
+
+  Public Sub addInvoice(doc)
+  End Sub
+
+  Public Function validateCustomer(doc)
+    validateCustomer = 2
+  End Function
+
+  Public Sub addCustomer(doc)
+  End Sub
+End Class
+
+Class InvoiceSinkClass
+  Private insertGt
+
+  Public Sub setInsertGt(aInsertGt)
+    Set insertGt = aInsertGt
+  End Sub
+
+  Public Function validate(doc)
+    validate = insertGt.validateInvoice(doc)
+  End Function
+
+  Public Sub add(doc)
+    insertGt.addInvoice(doc)
+  End Sub
+End Class
+
+Class CustomerSinkClass
+  Private insertGt
+
+  Public Sub setInsertGt(aInsertGt)
+    Set insertGt = aInsertGt
+  End Sub
+
+  Public Function validate(doc)
+    validate = insertGt.validateCustomer(doc)
+  End Function
+
+  Public Sub add(doc)
+    insertGt.addCustomer(doc)
+  End Sub
+End Class

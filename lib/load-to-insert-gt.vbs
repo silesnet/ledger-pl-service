@@ -5,31 +5,52 @@ include "lib/insert-gt"
 include "lib/journal"
 include "lib/loader"
 
-Dim inputFile, configFile
-If WScript.Arguments.Count = 2 Then
-  configFile = WScript.Arguments.Item(0)
-  inputFile = WScript.Arguments.Item(1)
+Dim sinkName, insertGtConfig, inputFile, journalFile
+If WScript.Arguments.Count = 4 Then
+  inputFile = WScript.Arguments.Item(0)
+  insertGtConfig = WScript.Arguments.Item(1)
+  sinkName = LCase(WScript.Arguments.Item(2))
+  journalFile = WScript.Arguments.Item(3)
 Else
-  WScript.Echo "Usage: import-invoices.vbs <Subiekt.xml> <input.yml>"
+  WScript.Echo "Usage: load-to-insert-gt.vbs <input.yml> <Subiekt.xml> (customers|invoices) <journal.jrn>"
   WScript.Quit -1
 End If
 
-debug "# Insert GT invoice loader STARTED"
+debug "# Insert GT invoice loader"
+Dim source, insertGt, sink, journal, loader
 
-Dim source, sink, journal
+debug "configuring YAML parser with '" & inputFile & "'..."
 Set source = yamlOf(inputFile)
-debug "yaml parser configured with '" & inputFile & "'"
 If Not source.hasNext Then
-  debug "nothing to load, input file si empty!"
+  debug "nothing to load, input file is empty!"
   WScript.Quit 0
 End If
 
-Set journal = journalOf(inputFile & ".jrn")
-debug "journal configured with '" & inputFile & ".jrn'"
+debug "configuring InsERT GT with '" & insertGtConfig & "'..."
+' Set insertGt = insertOf(insertGtConfig)
+Set insertGt = New FakeInsertGtClass
 
-debug "loading invoicees..."
+debug "configuring load type with '" & sinkName & "'..."
+Select Case sinkName
+  Case "invoices"
+    Set sink = New InvoiceSinkClass
+    sink.setInsertGt insertGt
+  Case "customers"
+    Set sink = New CustomerSinkClass
+    sink.setInsertGt insertGt
+  Case Else
+    WScript.Echo "ERROR: unsupported load type"
+    WScript.Quit -1
+End Select
 
-debug "FINISHED, loaded " & loaded & " of " & invoices & " invoices"
+debug "configuring journal '" & journalFile & "'..."
+Set journal = journalOf(journalFile)
+
+debug "loading invoices STARTED..."
+Set loader = loaderOf(source, sink, journal)
+loader.loadAll
+
+debug "FINISHED, loaded " & loader.loadedDocuments() & " of " & loader.allDocuments() & " " & sinkName
 
 WScript.Quit 0
 
