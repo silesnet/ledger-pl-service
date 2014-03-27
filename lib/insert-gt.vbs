@@ -61,31 +61,6 @@ Class InsertClass
     validateInvoice = data.Item("number")
   End Function
 
-  Private Sub assertHasLength(data, field, msg)
-    If Not hasLength(data, field) Then Err.Raise 1001, "validate", msg
-  End Sub
-
-  Private Sub assertIsNumeric(data, field, msg)
-    If Not isNumericValue(data, field) Then Err.Raise 1001, "validate", msg
-  End Sub
-
-  Private Function isNumericValue(data, field)
-    isNumericValue = False
-    If data.Exists(field) Then
-      If IsNumeric(data.Item(field)) Then isNumericValue = True
-    End If
-  End Function
-
-  Private Function hasLength(data, field)
-    hasLength = False
-    If data.Exists(field) Then
-      If Len(Trim("" & data.Item(field))) > 0 Then hasLength = True
-    End If
-  End Function
-
-  Public Function validateCustomer(data)
-  End Function
-
   Public Sub addInvoice(data)
     assertInitialized
     Dim invoice, itemIdx, itemObj, itemsCol, invoiceItem
@@ -107,9 +82,34 @@ Class InsertClass
     Next
   End Sub
 
+  Public Function validateCustomer(data)
+  End Function
+
   Public Sub addCustomer(data)
     assertInitialized
   End Sub
+
+  Private Sub assertHasLength(data, field, msg)
+    If Not hasLength(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
+  Private Sub assertIsNumeric(data, field, msg)
+    If Not isNumericValue(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
+  Private Function isNumericValue(data, field)
+    isNumericValue = False
+    If data.Exists(field) Then
+      If IsNumeric(data.Item(field)) Then isNumericValue = True
+    End If
+  End Function
+
+  Private Function hasLength(data, field)
+    hasLength = False
+    If data.Exists(field) Then
+      If Len(Trim("" & data.Item(field))) > 0 Then hasLength = True
+    End If
+  End Function
 
   Private Sub assertNotInitialized
     If isInitialized Then Err.Raise 1, "InsERT GT", "already initialized"
