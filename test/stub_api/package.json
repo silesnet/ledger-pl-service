@@ -1,0 +1,8 @@
+{
+  "name": "stub-rest",
+  "version": "0.1.0",
+  "dependencies": {
+    "restify": "^2.6.3",
+    "cson": "^1.4.5"
+  }
+}
