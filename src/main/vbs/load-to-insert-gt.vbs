@@ -6,13 +6,13 @@ include "journal"
 include "loader"
 
 Dim sinkName, insertGtConfig, inputFile, journalFile
-If WScript.Arguments.Count = 4 Then
+If WScript.Arguments.Count >= 4 Then
   inputFile = WScript.Arguments.Item(0)
   insertGtConfig = WScript.Arguments.Item(1)
   sinkName = LCase(WScript.Arguments.Item(2))
   journalFile = WScript.Arguments.Item(3)
 Else
-  WScript.Echo "Usage: load-to-insert-gt.vbs <input.yml> <Subiekt.xml> (customers|invoices) <journal.jrn>"
+  echoUsage
   WScript.Quit -1
 End If
 
@@ -27,8 +27,17 @@ If Not source.hasNext Then
 End If
 
 debug "configuring InsERT GT with '" & insertGtConfig & "'..."
-Set insertGt = insertOf(insertGtConfig)
-' Set insertGt = New FakeInsertGtClass
+If WScript.Arguments.Count = 5 Then
+  If WScript.Arguments.Item(4) = "--dry" Then
+    Set insertGt = New FakeInsertGtClass
+  Else
+    WScript.Echo "unknown argument '" & WScript.Arguments.Item(4) & "'"
+    echoUsage
+    WScript.Quit -1
+  End If
+Else
+  Set insertGt = insertOf(insertGtConfig)
+End If
 
 debug "configuring load type with '" & sinkName & "'..."
 Select Case sinkName
@@ -56,6 +65,10 @@ WScript.Quit 0
 
 Sub debug(msg)
   WScript.Echo msg
+End Sub
+
+Sub echoUsage()
+  WScript.Echo "Usage: load-to-insert-gt.vbs <input.yml> <Subiekt.xml> (customers|invoices) <journal.jrn> [--dry]"
 End Sub
 
 Sub include(file)
