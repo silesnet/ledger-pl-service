@@ -1,4 +1,4 @@
-package net.snet.base.resources;
+package net.snet.ledger.resources;
 
 import com.yammer.metrics.annotation.Timed;
 import org.joda.time.DateTime;
@@ -13,13 +13,13 @@ import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-@Path("/base")
+@Path("/ledger-pl")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class BaseResource {
-  private static final Logger LOGGER = LoggerFactory.getLogger(BaseResource.class);
+public class LedgerPlResource {
+  private static final Logger LOGGER = LoggerFactory.getLogger(LedgerPlResource.class);
 
-  public BaseResource() {
+  public LedgerPlResource() {
   }
 
   @GET

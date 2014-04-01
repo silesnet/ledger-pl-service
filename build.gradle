@@ -5,17 +5,16 @@ apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-mainClassName = 'net.snet.base.BaseService'
+mainClassName = 'net.snet.ledger.LedgerPlService'
 
 project.ext {
   dropwizardVersion = '0.6.2'
-  serviceConfig = 'base-service-dev.yml'
+  serviceConfig = 'ledger-pl-service-dev.yml'
 }
 
 dependencies {
   compile 'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion
-  compile 'com.yammer.dropwizard:dropwizard-jdbi:' + dropwizardVersion
-  compile 'postgresql:postgresql:9.1-901.jdbc4'
+	compile 'com.yammer.dropwizard:dropwizard-client:' + dropwizardVersion
   groovy 'org.codehaus.groovy:groovy-all:1.8.6'
   testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }
