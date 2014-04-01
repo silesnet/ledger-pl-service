@@ -16,7 +16,7 @@ Else
   WScript.Quit -1
 End If
 
-debug "# Insert GT invoice loader"
+debug "# Insert GT loader"
 Dim source, insertGt, sink, journal, loader
 
 debug "configuring YAML parser with '" & inputFile & "'..."
