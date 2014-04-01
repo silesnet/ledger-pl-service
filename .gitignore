@@ -1,4 +1,4 @@
-test/tmp
+src/test/vbs/tmp
 *.sublime*
 node_modules
 .gradle
