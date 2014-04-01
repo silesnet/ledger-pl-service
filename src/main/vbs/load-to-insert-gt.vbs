@@ -1,9 +1,9 @@
 Option Explicit
 
-include "lib/yaml-parser"
-include "lib/insert-gt"
-include "lib/journal"
-include "lib/loader"
+include "yaml-parser"
+include "insert-gt"
+include "journal"
+include "loader"
 
 Dim sinkName, insertGtConfig, inputFile, journalFile
 If WScript.Arguments.Count = 4 Then
@@ -59,5 +59,8 @@ Sub debug(msg)
 End Sub
 
 Sub include(file)
-  ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
+  Dim fs, path
+  Set fs = CreateObject("Scripting.FileSystemObject")
+  path = fs.GetParentFolderName(WScript.ScriptFullName) & "\" & file & ".vbs"
+  ExecuteGlobal fs.openTextFile(path).readAll()
 End Sub
