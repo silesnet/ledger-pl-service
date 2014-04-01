@@ -1,7 +1,7 @@
 Option Explicit
 
-include "lib/insert-gt"
-include "lib/map-utils"
+include "../../main/vbs/insert-gt"
+include "../../main/vbs/map-utils"
 
 testAll
 

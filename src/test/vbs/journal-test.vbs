@@ -1,10 +1,10 @@
 Option Explicit
 
-include "lib/journal"
+include "../../main/vbs/journal"
 
 Dim fs, tmp
 Set fs = CreateObject("Scripting.FileSystemObject")
-tmp = "test/tmp"
+tmp = "tmp"
 If Not fs.FolderExists(tmp) Then fs.CreateFolder tmp
 
 testAll
@@ -18,19 +18,19 @@ End Sub
 
 Sub testWriteRecord
   WScript.Echo "# it should store record"
-  deleteFile("test/tmp/record.jrn")
+  deleteFile(tmp & "/record.jrn")
   Dim journal
-  Set journal = journalOf("test/tmp/record.jrn")
+  Set journal = journalOf(tmp & "/record.jrn")
   journal.store("OK")
-  assert fs.OpenTextFile("test/tmp/record.jrn").readAll() = "OK", "store record"
+  assert fs.OpenTextFile(tmp & "/record.jrn").readAll() = "OK", "store record"
 End Sub
 
 Sub testOutputFileCreation
   WScript.Echo "# it should create output file"
-  deleteFile("test/tmp/test.jrn")
+  deleteFile(tmp & "/test.jrn")
   Dim journal
-  Set journal = journalOf("test/tmp/test.jrn")
-  assert fs.FileExists("test/tmp/test.jrn"), "read journal"
+  Set journal = journalOf(tmp & "/test.jrn")
+  assert fs.FileExists(tmp & "/test.jrn"), "read journal"
 End Sub
 
 Sub deleteFile(file)

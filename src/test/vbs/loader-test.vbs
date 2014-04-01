@@ -1,7 +1,7 @@
 Option Explicit
 
-include "lib/loader"
-include "lib/map-utils"
+include "../../main/vbs/loader"
+include "../../main/vbs/map-utils"
 
 testAll
 

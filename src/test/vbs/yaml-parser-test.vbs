@@ -1,7 +1,7 @@
 Option Explicit
 
-include "lib/yaml-parser"
-include "lib/map-utils"
+include "../../main/vbs/yaml-parser"
+include "../../main/vbs/map-utils"
 
 testAll
 
@@ -17,7 +17,7 @@ End Sub
 Sub testFetchCollection
   WScript.Echo "# it should fetch collections"
   Dim yaml
-  Set yaml = yamlOf("test/fixtures/yaml-fixture.yml")
+  Set yaml = yamlOf("fixtures/yaml-fixture.yml")
   Dim doc
   Set doc = yaml.nextDocument()
   Dim lines
@@ -32,7 +32,7 @@ End Sub
 Sub testParsedValues
   WScript.Echo "# it should parse document values"
   Dim yaml
-  Set yaml = yamlOf("test/fixtures/yaml-fixture.yml")
+  Set yaml = yamlOf("fixtures/yaml-fixture.yml")
   Dim doc
   Set doc = yaml.nextDocument()
   assert fetch(doc, "number") = "1234", "fetch 'number' failed"
@@ -53,14 +53,14 @@ End Sub
 Sub testEmptyYaml
   WScript.Echo "# it should not parse empty file"
   Dim yaml
-  Set yaml = yamlOf("test/fixtures/yaml-empty.yml")
+  Set yaml = yamlOf("fixtures/yaml-empty.yml")
   assert Not yaml.hasNext(), "empty file should not have next"
 End Sub
 
 Sub testIterator
   WScript.Echo "# it should iterate over all documents"
   Dim yaml
-  Set yaml = yamlOf("test/fixtures/yaml-fixture.yml")
+  Set yaml = yamlOf("fixtures/yaml-fixture.yml")
   Dim doc
   While yaml.hasNext()
     Set doc = yaml.nextDocument()

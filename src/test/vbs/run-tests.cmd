@@ -1,5 +1,5 @@
 @echo off
-cscript.exe /Nologo test/loader-test.vbs
-cscript.exe /Nologo test/insert-gt-test.vbs
-cscript.exe /Nologo test/journal-test.vbs
-cscript.exe /Nologo test/yaml-parser-test.vbs
+cscript.exe /Nologo loader-test.vbs
+cscript.exe /Nologo insert-gt-test.vbs
+cscript.exe /Nologo journal-test.vbs
+cscript.exe /Nologo yaml-parser-test.vbs
