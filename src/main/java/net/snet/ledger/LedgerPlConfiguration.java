@@ -5,6 +5,7 @@ import com.yammer.dropwizard.client.JerseyClientConfiguration;
 import com.yammer.dropwizard.config.Configuration;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class LedgerPlConfiguration extends Configuration {
 
@@ -20,6 +21,11 @@ public class LedgerPlConfiguration extends Configuration {
 	@JsonProperty
 	private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
+	@Valid
+	@JsonProperty
+	@NotNull
+	private String ledgerPlLoadUrl;
+
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
 	}
@@ -30,5 +36,9 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public JerseyClientConfiguration getJerseyClientConfiguration() {
 		return httpClient;
+	}
+
+	public String getLedgerPlLoadUrl() {
+		return ledgerPlLoadUrl;
 	}
 }

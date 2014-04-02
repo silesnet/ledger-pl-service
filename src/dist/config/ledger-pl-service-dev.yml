@@ -1,3 +1,5 @@
+ledgerPlLoadUrl: http://localhost:8089/invoices?qn=ledger-pl-load
+
 logging:
   level: INFO
 

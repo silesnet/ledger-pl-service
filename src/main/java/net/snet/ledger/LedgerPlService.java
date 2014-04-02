@@ -23,20 +23,22 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
   }
 
   @Override
-  public void run(LedgerPlConfiguration configuration, Environment environment) throws ClassNotFoundException {
+  public void run(LedgerPlConfiguration conf, Environment env) throws ClassNotFoundException {
 
-		final Client httpClient = new JerseyClientBuilder().using(configuration.getJerseyClientConfiguration())
-				.using(environment)
+		final Client httpClient = new JerseyClientBuilder()
+				.using(conf.getJerseyClientConfiguration())
+				.using(env)
 				.build();
 
-		final ScheduledExecutorService executorService = environment.managedScheduledExecutorService("poll-invoices", 1);
-		final InvoicesPoll invoicesPoll = new InvoicesPoll(httpClient);
-		executorService.scheduleWithFixedDelay(invoicesPoll, 0, configuration.getInvoicesPollingDelay(), TimeUnit.SECONDS);
+		final InvoicesPoll invoicesPoll = new InvoicesPoll(httpClient, conf.getLedgerPlLoadUrl());
 
-		if (configuration.getJsonPrettyPrint()) {
-			environment.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);
+	  final ScheduledExecutorService executorService = env.managedScheduledExecutorService("poll-invoices", 1);
+	  executorService.scheduleWithFixedDelay(invoicesPoll, 0, conf.getInvoicesPollingDelay(), TimeUnit.SECONDS);
+
+		if (conf.getJsonPrettyPrint()) {
+			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);
 		}
-		environment.addResource(new LedgerPlResource());
+		env.addResource(new LedgerPlResource());
 	}
 
 }
