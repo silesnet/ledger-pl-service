@@ -15,30 +15,47 @@ public class LedgerPlConfiguration extends Configuration {
 
 	@Valid
 	@JsonProperty
-	private long invoicesPollingDelay = 5;
-
-	@Valid
-	@JsonProperty
 	private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
 	@Valid
 	@JsonProperty
+	private long invoicePollDelay = 30;
+
+	@Valid
+	@JsonProperty
 	@NotNull
-	private String ledgerPlLoadUrl;
+	private String invoicePollUrl;
+
+	@Valid
+	@JsonProperty
+	private long customerPollDelay = 1;
+
+	@Valid
+	@JsonProperty
+	@NotNull
+	private String customerPollUrl;
 
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
-	}
-
-	public long getInvoicesPollingDelay() {
-		return invoicesPollingDelay;
 	}
 
 	public JerseyClientConfiguration getJerseyClientConfiguration() {
 		return httpClient;
 	}
 
-	public String getLedgerPlLoadUrl() {
-		return ledgerPlLoadUrl;
+	public long getInvoicePollDelay() {
+		return invoicePollDelay;
+	}
+
+	public String getInvoicePollUrl() {
+		return invoicePollUrl;
+	}
+
+	public long getCustomerPollDelay() {
+		return customerPollDelay;
+	}
+
+	public String getCustomerPollUrl() {
+		return customerPollUrl;
 	}
 }

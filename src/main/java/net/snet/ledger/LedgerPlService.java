@@ -7,10 +7,12 @@ import com.yammer.dropwizard.client.JerseyClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import net.snet.ledger.resources.LedgerPlResource;
-import net.snet.ledger.service.InvoicesPoll;
+import net.snet.ledger.service.*;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static net.snet.ledger.service.InsertGtLoaderFactory.Type.*;
 
 public class LedgerPlService extends Service<LedgerPlConfiguration> {
   public static void main(String[] args) throws Exception {
@@ -29,11 +31,16 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 				.using(conf.getJerseyClientConfiguration())
 				.using(env)
 				.build();
+		final BatchFactory batchFactory = new YamlBatchFactory();
+		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient, batchFactory);
 
-		final InvoicesPoll invoicesPoll = new InvoicesPoll(httpClient, conf.getLedgerPlLoadUrl());
+		final ScheduledExecutorService executorService = env.managedScheduledExecutorService("loader", 2);
 
-	  final ScheduledExecutorService executorService = env.managedScheduledExecutorService("poll-invoices", 1);
-	  executorService.scheduleWithFixedDelay(invoicesPoll, 0, conf.getInvoicesPollingDelay(), TimeUnit.SECONDS);
+		final LoadService loadInvoices = loadServiceFactory.newLoadService(INVOICE, conf.getInvoicePollUrl());
+		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
+
+		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl());
+		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
 			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);

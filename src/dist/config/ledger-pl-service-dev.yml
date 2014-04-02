@@ -1,4 +1,10 @@
-ledgerPlLoadUrl: http://localhost:8089/invoices?qn=ledger-pl-load
+invoicePollDelay: 30000
+
+invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load
+
+customerPollDelay: 1000
+
+customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
 
 logging:
   level: INFO
