@@ -6,6 +6,7 @@ import com.yammer.dropwizard.config.Configuration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.File;
 
 public class LedgerPlConfiguration extends Configuration {
 
@@ -35,6 +36,14 @@ public class LedgerPlConfiguration extends Configuration {
 	@NotNull
 	private String customerPollUrl;
 
+	@Valid
+	@JsonProperty
+	private File invoiceBatchPrefix = new File("work/invoice-pl-load-");
+
+	@Valid
+	@JsonProperty
+	private File customerBatchPrefix = new File("work/customer-pl-load-");
+
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
 	}
@@ -57,5 +66,13 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public String getCustomerPollUrl() {
 		return customerPollUrl;
+	}
+
+	public File getInvoiceBatchPrefix() {
+		return invoiceBatchPrefix;
+	}
+
+	public File getCustomerBatchPrefix() {
+		return customerBatchPrefix;
 	}
 }

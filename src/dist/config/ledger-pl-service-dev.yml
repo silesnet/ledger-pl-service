@@ -1,3 +1,7 @@
+invoiceBatchPrefix: work/invoice-pl-load-
+
+customerBatchPrefix: work/customer-pl-load-
+
 invoicePollDelay: 30000
 
 invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load

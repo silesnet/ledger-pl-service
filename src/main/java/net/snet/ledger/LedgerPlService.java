@@ -31,15 +31,16 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 				.using(conf.getJerseyClientConfiguration())
 				.using(env)
 				.build();
-		final BatchFactory batchFactory = new YamlBatchFactory();
-		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient, batchFactory);
+		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient);
 
 		final ScheduledExecutorService executorService = env.managedScheduledExecutorService("loader", 2);
 
-		final LoadService loadInvoices = loadServiceFactory.newLoadService(INVOICE, conf.getInvoicePollUrl());
+	  final BatchFactory invoiceBatchFactory = new YamlBatchFactory(conf.getInvoiceBatchPrefix());
+		final LoadService loadInvoices = loadServiceFactory.newLoadService(INVOICE, conf.getInvoicePollUrl(), invoiceBatchFactory);
 		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
 
-		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl());
+	  final BatchFactory customerBatchFactory = new YamlBatchFactory(conf.getCustomerBatchPrefix());
+		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl(), customerBatchFactory);
 		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
