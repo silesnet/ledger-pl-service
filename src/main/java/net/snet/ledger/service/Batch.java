@@ -1,5 +1,7 @@
 package net.snet.ledger.service;
 
+import com.google.common.base.Optional;
+
 import java.io.File;
 
 /**
@@ -9,11 +11,11 @@ public interface Batch {
 
 	File file();
 
-	void header(Object header);
+	void header(Optional header);
 
 	void append(Object item);
 
-	void trailer(Object trailer);
+	void trailer(Optional trailer);
 
 	boolean isReady();
 }
