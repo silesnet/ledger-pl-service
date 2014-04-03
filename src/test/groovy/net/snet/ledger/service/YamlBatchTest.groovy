@@ -12,7 +12,7 @@ class YamlBatchTest extends Specification {
   def 'it should serialize items to yaml'() {
   given:
     def map = Maps.newHashMap();
-    map.number = 'a123'
+    map.number = 'a123+'
     def yaml = new File(Resources.getResource('.').getFile(), 'testSerialize.yml')
     if (yaml.exists()) { yaml.delete() }
     def batch = new YamlBatch(yaml)
@@ -28,9 +28,9 @@ class YamlBatchTest extends Specification {
     yaml.text == '''\
 # comment
 ---
-number: "a123"
+number: "a123+"
 ---
-number: "a123"
+number: "a123+"
 ...
 '''
   }

@@ -56,7 +56,7 @@ Class YamlParserClass
         If matches.Count > 0 Then
           level = Len(matches(0).SubMatches(0))
           key = matches(0).SubMatches(1)
-          value = Trim(matches(0).SubMatches(2))
+          value = unQuote(Trim(matches(0).SubMatches(2)))
           isNewItem = (InStr(matches(0).SubMatches(0), "-") > 0)
           If level > prevLevel Then
             If "" = prevValue Then
@@ -113,6 +113,14 @@ Class YamlParserClass
   Private Sub assertInitialized
     If Not isInitialized Then Err.Raise 2, "YamlParser", "not initialized"
   End Sub
+
+  Private Function unQuote(value)
+    If Left(value, 1) = """" And Right(value, 1) = """" Then
+      unQuote = Mid(value, 2, Len(value) - 2)
+    Else
+      unQuote = value
+    End If
+  End Function
 
   Private Sub debug(msg)
     'WScript.Echo msg
