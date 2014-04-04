@@ -1,6 +1,8 @@
 package net.snet.ledger.service;
 
+import com.google.common.collect.Maps;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,12 @@ public class DefaultResource implements RestResource {
 
 	@Override
 	public void patch(List items) {
-
+		Map patch = Maps.newHashMap();
+		patch.put(name, items);
+		LOGGER.debug("executing PUT to '{}'", url);
+		ClientResponse response = resource
+				.accept(MediaType.APPLICATION_JSON_TYPE)
+				.type(MediaType.APPLICATION_JSON_TYPE)
+				.put(ClientResponse.class, patch);
 	}
 }
