@@ -1,0 +1,20 @@
+# Some comments here
+---
+number: "612262172"
+customerId: "CUST1"
+items:
+- name: "Wireless +"
+  unitPrice: 10
+  quantity: 1
+  unit: "mies."
+  vatId: 100001
+---
+number: "612262173"
+customerId: "CUST2"
+items:
+- name: "Wireless +"
+  unitPrice: 10
+  quantity: 1
+  unit: "mies."
+  vatId: 100001
+...

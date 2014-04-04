@@ -7,36 +7,17 @@ import java.io.File;
  */
 public class InsertGtLoaderFactory implements LoaderFactory {
 
-	public enum Type {INVOICE, CUSTOMER}
+	private final File loadCmd;
 
-	private final Type type;
+	private final File insertGtConfig;
 
-	public InsertGtLoaderFactory(Type type) {
-		this.type = type;
+	public InsertGtLoaderFactory(File loadCmd, File insertGtConfig) {
+		this.insertGtConfig = insertGtConfig;
+		this.loadCmd = loadCmd;
 	}
 
 	@Override
 	public Loader newLoader() {
-		return new Loader() {
-			@Override
-			public Journal load(File file) {
-				return new Journal() {
-					@Override
-					public boolean hasNext() {
-						return false;
-					}
-
-					@Override
-					public Record next() {
-						return null;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-				};
-			}
-		};
+		return new InsertGtLoader(loadCmd, insertGtConfig);
 	}
 }

@@ -12,8 +12,6 @@ import net.snet.ledger.service.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static net.snet.ledger.service.InsertGtLoaderFactory.Type.*;
-
 public class LedgerPlService extends Service<LedgerPlConfiguration> {
   public static void main(String[] args) throws Exception {
     new LedgerPlService().run(args);
@@ -31,16 +29,16 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 				.using(conf.getJerseyClientConfiguration())
 				.using(env)
 				.build();
-		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient);
+		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient, conf.getInsertGtConfig());
 
 		final ScheduledExecutorService executorService = env.managedScheduledExecutorService("loader", 2);
 
 	  final BatchFactory invoiceBatchFactory = new YamlBatchFactory(conf.getInvoiceBatchPrefix());
-		final LoadService loadInvoices = loadServiceFactory.newLoadService(INVOICE, conf.getInvoicePollUrl(), invoiceBatchFactory);
+		final LoadService loadInvoices = loadServiceFactory.newLoadService(conf.getInvoicePollUrl(), conf.getLoadInvoiceCmd(), invoiceBatchFactory);
 		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
 
 //	  final BatchFactory customerBatchFactory = new YamlBatchFactory(conf.getCustomerBatchPrefix());
-//		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl(), customerBatchFactory);
+//		final LoadService loadCustomers = loadServiceFactory.newLoadService(conf.getCustomerPollUrl(), conf.getLoadCustomerCmd(), customerBatchFactory);
 //		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {

@@ -44,6 +44,21 @@ public class LedgerPlConfiguration extends Configuration {
 	@JsonProperty
 	private File customerBatchPrefix = new File("work/customer-pl-load-");
 
+	@Valid
+	@JsonProperty
+	@NotNull
+	private File insertGtConfig;
+
+	@Valid
+	@JsonProperty
+	@NotNull
+	private File loadInvoiceCmd;
+
+	@Valid
+	@JsonProperty
+	@NotNull
+	private File loadCustomerCmd;
+
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
 	}
@@ -74,5 +89,17 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public File getCustomerBatchPrefix() {
 		return customerBatchPrefix;
+	}
+
+	public File getInsertGtConfig() {
+		return insertGtConfig;
+	}
+
+	public File getLoadInvoiceCmd() {
+		return loadInvoiceCmd;
+	}
+
+	public File getLoadCustomerCmd() {
+		return loadCustomerCmd;
 	}
 }

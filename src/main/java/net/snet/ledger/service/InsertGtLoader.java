@@ -1,13 +1,52 @@
 package net.snet.ledger.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created by admin on 2.4.14.
  */
 public class InsertGtLoader implements Loader {
+	private static final Logger LOGGER = LoggerFactory.getLogger(InsertGtLoader.class);
+
+	private final File insertGtConfig;
+	private final File loadCmd;
+
+	public InsertGtLoader(File loadCmd, File insertGtConfig) {
+		this.loadCmd = loadCmd;
+		this.insertGtConfig = insertGtConfig;
+	}
+
 	@Override
-	public Journal load(File file) {
-		return null;
+	public Journal load(final File file) {
+		LOGGER.info("loading '{}' into InsERT GT...", file);
+		// TODO correct cmd folders
+		String[] cmd = {loadCmd.getPath(), file.getPath(), insertGtConfig.getPath()};
+		int status;
+		try {
+			Process process = Runtime.getRuntime().exec(cmd);
+			status = process.waitFor();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				LOGGER.debug(line);
+			}
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		if (status != 0) {
+			LOGGER.error("FAILED loading into InsERT GT with error code '{}'", status);
+			throw new RuntimeException("FAILED loading into InsERT GT with error code '" + status + "'");
+		}
+		return new CsvJournal(journalFile(file));
+	}
+
+	private File journalFile(File file) {
+		return new File(file.getParentFile(), file.getName() + ".jrn");
 	}
 }
