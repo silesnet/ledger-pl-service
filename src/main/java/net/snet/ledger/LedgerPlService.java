@@ -39,9 +39,9 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 		final LoadService loadInvoices = loadServiceFactory.newLoadService(INVOICE, conf.getInvoicePollUrl(), invoiceBatchFactory);
 		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
 
-	  final BatchFactory customerBatchFactory = new YamlBatchFactory(conf.getCustomerBatchPrefix());
-		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl(), customerBatchFactory);
-		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
+//	  final BatchFactory customerBatchFactory = new YamlBatchFactory(conf.getCustomerBatchPrefix());
+//		final LoadService loadCustomers = loadServiceFactory.newLoadService(CUSTOMER, conf.getCustomerPollUrl(), customerBatchFactory);
+//		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
 			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);

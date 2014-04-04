@@ -1,5 +1,7 @@
 package net.snet.ledger.service;
 
+import java.io.File;
+
 /**
  * Created by admin on 2.4.14.
  */
@@ -15,6 +17,26 @@ public class InsertGtLoaderFactory implements LoaderFactory {
 
 	@Override
 	public Loader newLoader() {
-		return null;
+		return new Loader() {
+			@Override
+			public Journal load(File file) {
+				return new Journal() {
+					@Override
+					public boolean hasNext() {
+						return false;
+					}
+
+					@Override
+					public Record next() {
+						return null;
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
 	}
 }

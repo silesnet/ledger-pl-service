@@ -2,6 +2,7 @@ package net.snet.ledger.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.client.Client;
@@ -40,7 +41,7 @@ public class LoadService implements Runnable {
 			for (Object item : items) {
 				batch.append(item);
 			}
-			batch.trailer(null);
+			batch.trailer(Optional.absent());
 
 			LOGGER.info("loading batch...");
 			final Loader loader = loaderFactory.newLoader();
@@ -63,6 +64,7 @@ public class LoadService implements Runnable {
 			}
 			LOGGER.info("patching resources...");
 			restResource.patch(patches);
+			LOGGER.info("DONE");
 		} catch (Exception e) {
 			LOGGER.error("FAILED polling", e);
 		}
