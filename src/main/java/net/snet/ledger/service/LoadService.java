@@ -33,6 +33,7 @@ public class LoadService implements Runnable {
 	@Override
 	public void run() {
 		try {
+			LOGGER.info("load STARTED...");
 			LOGGER.info("polling...");
 			final List items = restResource.poll();
 
@@ -64,9 +65,9 @@ public class LoadService implements Runnable {
 			}
 			LOGGER.info("patching resources...");
 			restResource.patch(patches);
-			LOGGER.info("DONE");
+			LOGGER.info("FINISHED load");
 		} catch (Exception e) {
-			LOGGER.error("FAILED polling", e);
+			LOGGER.error("FAILED load", e);
 		}
 	}
 }
