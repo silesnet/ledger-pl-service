@@ -25,7 +25,6 @@ public class InsertGtLoader implements Loader {
 	@Override
 	public Journal load(final File file) {
 		LOGGER.info("loading '{}' into InsERT GT...", file);
-		// TODO correct cmd folders
 		String[] cmd = {loadCmd.getPath(), file.getPath(), insertGtConfig.getPath()};
 		int status;
 		try {
