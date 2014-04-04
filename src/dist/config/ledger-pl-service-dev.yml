@@ -1,6 +1,6 @@
-invoiceBatchPrefix: work/invoice-pl-load-
+invoiceBatchPrefix: build/work/invoice-pl-load-
 
-customerBatchPrefix: work/customer-pl-load-
+customerBatchPrefix: build/work/customer-pl-load-
 
 invoicePollDelay: 2000
 
