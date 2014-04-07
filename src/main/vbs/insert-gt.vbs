@@ -58,6 +58,7 @@ Class InsertClass
         assertIsNumeric itemData, "quantity", "quantity 'items[].quantity' is invalid or missing"
         assertHasLength itemData, "unit", "unit 'items[].unit' is missing"
         assertIsNumeric itemData, "vatId", "vatId 'items[].vatId' is invalid or missing"
+        assertIsNumeric itemData, "vatPct", "vat percentage 'items[].vatPct' is invalid or missing"
       Next
     End If
     validateInvoice = data.Item("number")

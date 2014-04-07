@@ -40,7 +40,9 @@ Sub testValidateInvoice
   item.Add "unit", "mies."
   assertNotValidInvoice ins, invoice, "item.unit added"
   item.Add "vatId", 100002
-  assertValidInvoice ins, invoice, "item.vatId added"
+  assertNotValidInvoice ins, invoice, "item.vatId added"
+  item.Add "vatPct", 23
+  assertValidInvoice ins, invoice, "item.vatPct added"
   id = ins.validateInvoice(invoice)
   assert (id = "1017"), "fetch invoice number"
   item.Item("name") = "123456789012345678901234567890123456789012345678901"
