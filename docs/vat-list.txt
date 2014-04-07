@@ -1,3 +1,5 @@
+table sl_StawkaVAT
+
 vat_Id  vat_Nazwa   vat_Stawka  vat_Symbol
 1   Podatek VAT 22% 22,00   22
 2   Podatek VAT 7%  7,00    7
