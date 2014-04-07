@@ -6,7 +6,7 @@ import spock.lang.Specification
  * Created by admin on 7.4.14.
  */
 class InvoiceMapperTest extends Specification {
-	def pctToIdMap = [ 23: 100002 ]
+	def pctToIdMap = [ 23: 100001 ]
 
 	def 'it should map SIS invoice to InsERT invoice'() {
 	given:
@@ -23,7 +23,7 @@ class InvoiceMapperTest extends Specification {
 		insert.items[0].unitPrice == 48.0
 		insert.items[0].quantity == 1.0
 		insert.items[0].unit == 'mies.'
-		insert.items[0].vatId == 100002
+		insert.items[0].vatId == 100001
 		insert.items[0].vatPct == 23
 	}
 

@@ -91,7 +91,8 @@ Sub testAddInvoice
   item.Add "unitPrice", 50.12
   item.Add "quantity", 0.3
   item.Add "unit", "mies."
-  item.Add "vatId", 100002
+  item.Add "vatId", 100001
+  item.Add "vatPct", 23
   ' WScript.Echo dumpMap(invoice, 0)
   ins.addInvoice(invoice)
 End Sub

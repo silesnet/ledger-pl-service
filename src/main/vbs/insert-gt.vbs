@@ -81,6 +81,9 @@ Class InsertClass
       invoiceItem.IloscJm = itemObj.Item("quantity")
       invoiceItem.Jm = itemObj.Item("unit")
       invoiceItem.VatId = itemObj.Item("vatId")
+      If invoiceItem.VatProcent <> itemObj.Item("vatPct") Then
+        Err.Raise 1002, "addInvoice", "vatId '" & itemObj.Item("vatId") & "' and vatPct '"  & itemObj.Item("vatPct") & "' does not match"
+      End If
       invoice.Zapisz
       invoice.Zamknij
     Next
