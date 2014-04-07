@@ -22,12 +22,13 @@ public class InvoiceMapper implements Mapper {
 		final ArrayList<Object> items = Lists.newArrayList();
 		invoice.put("items", items);
 		for (Object lineObj : (Collection) data.get("lines")) {
-			Map<Object, Object> line = (Map) lineObj;
+			Map line = (Map) lineObj;
 			Map<Object, Object> item = Maps.newHashMap();
-			item.put("name", line.get("text") + ", " + period(invoice.get("period_from"), invoice.get("period_to")));
+			item.put("name", line.get("text") + ", " + period(data.get("period_from"), data.get("period_to")));
 			item.put("unitPrice", line.get("price"));
 			item.put("quantity", line.get("amount"));
 			item.put("unit", unit(line.get("is_display_unit")));
+			item.put("vatPct", data.get("vat"));
 			items.add(item);
 		}
 		return invoice;

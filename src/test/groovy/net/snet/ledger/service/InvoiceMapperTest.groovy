@@ -21,17 +21,20 @@ class InvoiceMapperTest extends Specification {
 		insert.items[0].unitPrice == 48.0
 		insert.items[0].quantity == 1.0
 		insert.items[0].unit == 'mies.'
+		insert.items[0].vatPct == 23
 	}
 
 	def 'it should map item.name when period_to is null'() {
 		given:
 			def sis = fixture()
 			sis.remove('period_to')
-			def mapper = new InvoiceMapper()
+			sis.period_from = 1406303200000
+
+		def mapper = new InvoiceMapper()
 		when:
 			def insert = mapper.map(sis)
 		then:
-			insert.items[0].name == 'WIRELESSmax  10/2 Mbps, 04/2014'
+			insert.items[0].name == 'WIRELESSmax  10/2 Mbps, 07/2014'
 	}
 
 	def 'it should map unit when is_display_unit is false'() {
@@ -52,6 +55,7 @@ class InvoiceMapperTest extends Specification {
 				purge_date: 1397772000000,
 				period_from: 1396303200000,
 				period_to: 1398808800000,
+				vat: 23,
 				lines: [
 						[
 								text : "WIRELESSmax  10/2 Mbps",
