@@ -80,7 +80,7 @@ Sub testAddInvoice
   Dim ins, invoice
   Set ins = insertOf("Subiekt.xml")
   Set invoice = CreateObject("Scripting.Dictionary")
-  invoice.Add "number", "5017"
+  ' invoice.Add "number", 5018
   invoice.Add "customerId", "ABC"
   invoice.Add "invoiceDate", "2014-04-15"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
@@ -88,13 +88,11 @@ Sub testAddInvoice
   Dim item
   Set item = invoice.Item("items").Item(0)
   item.Add "name", "Wireless +"
-  item.Add "unitPrice", 50.12
-  item.Add "quantity", 0.3
+  item.Add "unitPrice", 50.5
+  item.Add "quantity", 1.2
   item.Add "unit", "mies."
   item.Add "vatId", 100001
   item.Add "vatPct", 23
-  WScript.Echo dumpMap(invoice, 0)
-  ins.validateInvoice(invoice)
   ins.addInvoice(invoice)
 End Sub
 

@@ -68,6 +68,7 @@ Class InsertClass
     assertInitialized
     Dim invoice, itemIdx, itemObj, itemsCol, invoiceItem
     Set invoice = instance.Dokumenty.Dodaj(gtaSubiektDokumentFS)
+    invoice.AutoPrzeliczanie = False
     invoice.Numer = data.Item("number")
     invoice.KontrahentId = data.Item("customerId")
     invoice.DataWystawienia = fromIsoDate(data.Item("invoiceDate"))
@@ -77,13 +78,14 @@ Class InsertClass
       Set itemObj = itemsCol.Item(itemIdx)
       Set invoiceItem = invoice.Pozycje.DodajUslugeJednorazowa()
       invoiceItem.UslJednNazwa = itemObj.Item("name")
-      invoiceItem.CenaNettoPrzedRabatem = itemObj.Item("unitPrice")
-      invoiceItem.IloscJm = itemObj.Item("quantity")
+      invoiceItem.CenaNettoPrzedRabatem = toNumber(itemObj.Item("unitPrice"))
+      invoiceItem.IloscJm = toNumber(itemObj.Item("quantity"))
       invoiceItem.Jm = itemObj.Item("unit")
-      invoiceItem.VatId = itemObj.Item("vatId")
-      If invoiceItem.VatProcent <> itemObj.Item("vatPct") Then
+      invoiceItem.VatId = CLng(itemObj.Item("vatId"))
+      If invoiceItem.VatProcent <> CInt(itemObj.Item("vatPct")) Then
         Err.Raise 1002, "addInvoice", "vatId '" & itemObj.Item("vatId") & "' and vatPct '"  & itemObj.Item("vatPct") & "' does not match"
       End If
+      invoice.Przelicz
       invoice.Zapisz
       invoice.Zamknij
     Next
@@ -115,7 +117,7 @@ Class InsertClass
   Private Function isNumericValue(data, field)
     isNumericValue = False
     If data.Exists(field) Then
-      If IsNumeric(data.Item(field)) Then isNumericValue = True
+      If IsNumeric(toNumber(data.Item(field))) Then isNumericValue = True
     End If
   End Function
 
@@ -141,6 +143,10 @@ Class InsertClass
     If data.Exists(field) Then
       If Len(Trim("" & data.Item(field))) > 0 Then hasLength = True
     End If
+  End Function
+
+  Private Function toNumber(value)
+    toNumber = Replace(("" & value), ".", ",", 1, 1)
   End Function
 
   Private Function isLengthUpTo(data, field, length)
