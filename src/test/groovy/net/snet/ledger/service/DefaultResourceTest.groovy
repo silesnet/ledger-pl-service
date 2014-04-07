@@ -4,6 +4,7 @@ import com.sun.jersey.api.client.Client
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpServer
+import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -69,7 +70,8 @@ class DefaultResourceTest extends Specification {
 		name == 'posts'
 	}
 
-  def 'it should put item updates to url'() {
+  @Ignore
+	def 'it should put item updates to url'() {
   given:
     def url = 'http://localhost:8098/items?qn=all'
     def client = Client.create()
