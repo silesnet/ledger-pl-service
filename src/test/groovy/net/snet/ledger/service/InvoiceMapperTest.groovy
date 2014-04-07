@@ -6,10 +6,12 @@ import spock.lang.Specification
  * Created by admin on 7.4.14.
  */
 class InvoiceMapperTest extends Specification {
+	def pctToIdMap = [ 23: 100002 ]
+
 	def 'it should map SIS invoice to InsERT invoice'() {
 	given:
 		def sis = fixture()
-		def mapper = new InvoiceMapper()
+		def mapper = new InvoiceMapper(pctToIdMap)
   when:
 		def insert = mapper.map(sis)
 	then:
@@ -21,6 +23,7 @@ class InvoiceMapperTest extends Specification {
 		insert.items[0].unitPrice == 48.0
 		insert.items[0].quantity == 1.0
 		insert.items[0].unit == 'mies.'
+		insert.items[0].vatId == 100002
 		insert.items[0].vatPct == 23
 	}
 
@@ -30,7 +33,7 @@ class InvoiceMapperTest extends Specification {
 			sis.remove('period_to')
 			sis.period_from = 1406303200000
 
-		def mapper = new InvoiceMapper()
+		def mapper = new InvoiceMapper(pctToIdMap)
 		when:
 			def insert = mapper.map(sis)
 		then:
@@ -41,7 +44,7 @@ class InvoiceMapperTest extends Specification {
 		given:
 			def sis = fixture()
 			sis.lines[0].is_display_unit = false
-			def mapper = new InvoiceMapper()
+			def mapper = new InvoiceMapper(pctToIdMap)
 		when:
 			def insert = mapper.map(sis)
 		then:

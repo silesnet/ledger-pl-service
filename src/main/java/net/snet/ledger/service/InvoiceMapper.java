@@ -12,6 +12,12 @@ import java.util.Map;
  * Created by admin on 7.4.14.
  */
 public class InvoiceMapper implements Mapper {
+	private final Map<Integer, Integer> pctToIdMap;
+
+	public InvoiceMapper(Map<Integer, Integer> pctToIdMap) {
+		this.pctToIdMap = pctToIdMap;
+	}
+
 	@Override
 	public Map map(Map data) {
 		final Map<Object, Object> invoice = Maps.newHashMap();
@@ -28,6 +34,7 @@ public class InvoiceMapper implements Mapper {
 			item.put("unitPrice", line.get("price"));
 			item.put("quantity", line.get("amount"));
 			item.put("unit", unit(line.get("is_display_unit")));
+			item.put("vatId", pctToIdMap.get(Integer.valueOf(data.get("vat").toString())));
 			item.put("vatPct", data.get("vat"));
 			items.add(item);
 		}
