@@ -46,6 +46,7 @@ Class InsertClass
   Public Function validateInvoice(data)
     assertHasLength data, "number", "invoice number 'number' is missing"
     assertHasLength data, "customerId", "customer id 'customerId' is missing"
+    assertIsDate data, "invoiceDate", "invoice date 'invoiceDate' is invalid or missing"
     If data.Exists("items") Then
       Dim items, itemKey, itemData
       Set items = data.Item("items")
@@ -68,6 +69,7 @@ Class InsertClass
     Set invoice = instance.Dokumenty.Dodaj(gtaSubiektDokumentFS)
     invoice.Numer = data.Item("number")
     invoice.KontrahentId = data.Item("customerId")
+    invoice.DataWystawienia = fromIsoDate(data.Item("invoiceDate"))
     Set itemsCol = data.Item("items")
     For Each itemIdx In itemsCol
       debug itemIdx
@@ -102,11 +104,32 @@ Class InsertClass
     If Not isLengthUpTo(data, field, length) Then Err.Raise 1001, "validate", msg
   End Sub
 
+  Private Sub assertIsDate(data, field, msg)
+    If Not isDateValue(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
   Private Function isNumericValue(data, field)
     isNumericValue = False
     If data.Exists(field) Then
       If IsNumeric(data.Item(field)) Then isNumericValue = True
     End If
+  End Function
+
+  Private Function isDateValue(data, field)
+    Dim tmp
+    isDateValue = False
+    If data.Exists(field) Then
+      On Error Resume Next
+      tmp = "" & fromIsoDate(data, field)
+      On Error Goto 0
+      If tmp <> "" Then isDateValue = True
+    End If
+  End Function
+
+  Private Function fromIsoDate(data, field)
+    Dim tokens
+    tokens = Split(data.Item(field), "-")
+    fromIsoDate = DateSerial(tokens(0), tokens(1), tokens(2))
   End Function
 
   Private Function hasLength(data, field)

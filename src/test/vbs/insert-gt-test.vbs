@@ -18,51 +18,59 @@ Sub testValidateInvoice
   Dim ins, invoice, id
   Set ins = new InsertClass
   Set invoice = CreateObject("Scripting.Dictionary")
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "empty"
   invoice.Add "number", "1017"
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "number added"
   invoice.Add "customerId", "ABC"
-  assertValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "customerId added"
+  invoice.Add "invoiceDate", "2014-04-15"
+  assertValidInvoice ins, invoice, "invoiceDate added"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
-  assertValidInvoice ins, invoice
+  assertValidInvoice ins, invoice, "empty items added"
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "empty item added"
   Dim item
   Set item = invoice.Item("items").Item(0)
   item.Add "name", "Wireless +"
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "item.name added"
   item.Add "unitPrice", 50.12
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "item.unitPrice added"
   item.Add "quantity", 0.3
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "item.quantity added"
   item.Add "unit", "mies."
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "item.unit added"
   item.Add "vatId", 100002
-  assertValidInvoice ins, invoice
+  assertValidInvoice ins, invoice, "item.vatId added"
   id = ins.validateInvoice(invoice)
   assert (id = "1017"), "fetch invoice number"
   item.Item("name") = "123456789012345678901234567890123456789012345678901"
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "item.name to 50 chars"
   item.Item("name") = "12345678901234567890123456789012345678901234567890"
-  assertValidInvoice ins, invoice
+  assertValidInvoice ins, invoice, "item.name 50 chars"
 
   ' WScript.Echo dumpMap(invoice, 0)
   invoice.Item("items").Add 1, CreateObject("Scripting.Dictionary")
-  assertNotValidInvoice ins, invoice
+  assertNotValidInvoice ins, invoice, "second item empty"
 End Sub
 
-Private Sub assertValidInvoice(ins, inv)
-  ins.validateInvoice(inv)
-End Sub
-
-Private Sub assertNotValidInvoice(ins, inv)
+Private Sub assertValidInvoice(ins, inv, msg)
   Dim error
   On Error Resume Next
-  assertValidInvoice ins, inv
+  ins.validateInvoice(inv)
   error = Err.Number
   On Error Goto 0
   Err.Clear
-  If error = 0 Then Err.Raise 999, "assertNotValidInvoice", "invoice was valid"
+  If error <> 0 Then Err.Raise 999, "assertValidInvoice", "invoice is not valid '" & msg & "'"
+End Sub
+
+Private Sub assertNotValidInvoice(ins, inv, msg)
+  Dim error
+  On Error Resume Next
+  ins.validateInvoice(inv)
+  error = Err.Number
+  On Error Goto 0
+  Err.Clear
+  If error = 0 Then Err.Raise 999, "assertNotValidInvoice", "invoice is valid '" & msg & "'"
 End Sub
 
 Sub testAddInvoice
