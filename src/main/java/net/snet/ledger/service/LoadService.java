@@ -19,11 +19,13 @@ public class LoadService implements Runnable {
 	private final RestResource restResource;
 	private final BatchFactory batchFactory;
 	private final LoaderFactory loaderFactory;
+	private final Mapper mapper;
 
-	public LoadService(RestResource restResource, BatchFactory batchFactory, LoaderFactory loaderFactory) {
+	public LoadService(RestResource restResource, BatchFactory batchFactory, LoaderFactory loaderFactory, Mapper mapper) {
 		this.restResource = restResource;
 		this.batchFactory = batchFactory;
 		this.loaderFactory = loaderFactory;
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -36,7 +38,7 @@ public class LoadService implements Runnable {
 			LOGGER.info("creating batch...");
 			final Batch batch = batchFactory.newBatch();
 			for (Object item : items) {
-				batch.append(item);
+				batch.append(mapper.map((Map) item));
 			}
 			batch.trailer(Optional.absent());
 

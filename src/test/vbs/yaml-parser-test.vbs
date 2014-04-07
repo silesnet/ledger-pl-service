@@ -7,11 +7,41 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST yaml-parser..."
+  testParseLedgerInvoice
   testIterator
   testEmptyYaml
   testParsedValues
   testFetchCollection
   WScript.Echo "PASSED"
+End Sub
+
+Sub testParseLedgerInvoice
+  WScript.Echo "# it should parse ledger invoice"
+  Dim yaml
+  Set yaml = yamlOf("fixtures/ledger-invoice.yml")
+  Dim doc
+  Set doc = yaml.nextDocument()
+  assert fetch(doc, "number") = "4451", "fetch 'number' failed"
+  assert fetch(doc, "customerId") = "AB-5578", "fetch 'customerId' failed"
+  assert fetch(doc, "invoiceDate") = "2014-04-04", "fetch 'invoiceDate' failed"
+  assert fetch(doc, "dueDate") = "2014-04-18", "fetch 'dueDate' failed"
+  assert fetch(doc, "items.0.name") = "WIRELESSmax  10/2 Mbps, 04/2014", "fetch 'items.1.name' failed"
+  assert fetch(doc, "items.0.unitPrice") = 48, "fetch 'items.1.unitPrice' failed"
+  assert fetch(doc, "items.0.quantity") = 1, "fetch 'items.0.quantity' failed"
+  assert fetch(doc, "items.0.unit") = "mies.", "fetch 'items.0.unit' failed"
+  assert fetch(doc, "items.0.vatId") = 100001, "fetch 'items.0.vatId' failed"
+  assert fetch(doc, "items.0.vatPct") = 23, "fetch 'items.0.vatPct' failed"
+  Set doc = yaml.nextDocument()
+  assert fetch(doc, "number") = "4452", "fetch 'number' failed"
+  assert fetch(doc, "customerId") = "PL-1628", "fetch 'customerId' failed"
+  assert fetch(doc, "invoiceDate") = "2014-04-04", "fetch 'invoiceDate' failed"
+  assert fetch(doc, "dueDate") = "2014-04-18", "fetch 'dueDate' failed"
+  assert fetch(doc, "items.0.name") = "WIRELESSmax  25/2 Mbps, 04/2014", "fetch 'items.1.name' failed"
+  assert fetch(doc, "items.0.unitPrice") = 78, "fetch 'items.1.unitPrice' failed"
+  assert fetch(doc, "items.0.quantity") = 1, "fetch 'items.0.quantity' failed"
+  assert fetch(doc, "items.0.unit") = "mies.", "fetch 'items.0.unit' failed"
+  assert fetch(doc, "items.0.vatId") = 100001, "fetch 'items.0.vatId' failed"
+  assert fetch(doc, "items.0.vatPct") = 23, "fetch 'items.0.vatPct' failed"
 End Sub
 
 Sub testFetchCollection

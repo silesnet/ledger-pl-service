@@ -1,4 +1,8 @@
 insertGtConfig: Subiekt.xml
+insertVatMap:
+  0: 4
+  8: 100002
+  23: 100001
 
 invoicePollDelay: 2000
 invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load

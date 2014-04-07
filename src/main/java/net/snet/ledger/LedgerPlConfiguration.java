@@ -7,6 +7,7 @@ import com.yammer.dropwizard.config.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.util.Map;
 
 public class LedgerPlConfiguration extends Configuration {
 
@@ -59,6 +60,8 @@ public class LedgerPlConfiguration extends Configuration {
 	@NotNull
 	private File loadCustomerCmd;
 
+	private Map<Integer, Integer> insertVatMap;
+
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
 	}
@@ -101,5 +104,9 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public File getLoadCustomerCmd() {
 		return loadCustomerCmd;
+	}
+
+	public Map<Integer, Integer> getInsertVatMap() {
+		return insertVatMap;
 	}
 }

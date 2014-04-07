@@ -8,7 +8,7 @@ testAll
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
   ' testInsertStart
-  ' testAddInvoice
+  testAddInvoice
   testValidateInvoice
   WScript.Echo "PASSED"
 End Sub
@@ -80,7 +80,7 @@ Sub testAddInvoice
   Dim ins, invoice
   Set ins = insertOf("Subiekt.xml")
   Set invoice = CreateObject("Scripting.Dictionary")
-  ' invoice.Add "number", "1017"
+  invoice.Add "number", "5017"
   invoice.Add "customerId", "ABC"
   invoice.Add "invoiceDate", "2014-04-15"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
@@ -93,7 +93,8 @@ Sub testAddInvoice
   item.Add "unit", "mies."
   item.Add "vatId", 100001
   item.Add "vatPct", 23
-  ' WScript.Echo dumpMap(invoice, 0)
+  WScript.Echo dumpMap(invoice, 0)
+  ins.validateInvoice(invoice)
   ins.addInvoice(invoice)
 End Sub
 

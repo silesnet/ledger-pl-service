@@ -11,26 +11,29 @@ import spock.lang.Specification
 class YamlBatchTest extends Specification {
   def 'it should serialize items to yaml'() {
   given:
-    def map = Maps.newHashMap();
+    def map = Maps.newLinkedHashMap();
     map.number = 'a123+'
+	  map.quantity = 1.4
     def yaml = new File(Resources.getResource('.').getFile(), 'testSerialize.yml')
     if (yaml.exists()) { yaml.delete() }
     def batch = new YamlBatch(yaml)
     assert ! batch.isReady()
   when:
-    batch.header(Optional.of("# comment"))
+    batch.header(Optional.of("\n# comment"))
     batch.append(map)
     batch.append(map)
     assert ! batch.isReady()
     batch.trailer(Optional.absent())
   then:
     batch.isReady()
-    yaml.text == '''\
+    yaml.text == '''
 # comment
 ---
 number: "a123+"
+quantity: 1.4
 ---
 number: "a123+"
+quantity: 1.4
 ...
 '''
   }

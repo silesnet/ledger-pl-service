@@ -20,7 +20,7 @@ public class InvoiceMapper implements Mapper {
 
 	@Override
 	public Map map(Map data) {
-		final Map<Object, Object> invoice = Maps.newHashMap();
+		final Map<Object, Object> invoice = Maps.newLinkedHashMap();
 		invoice.put("number", invoiceNumber(data.get("number")));
 		invoice.put("customerId", ((Map) data.get("customer")).get("symbol"));
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
@@ -29,7 +29,7 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("items", items);
 		for (Object lineObj : (Collection) data.get("lines")) {
 			Map line = (Map) lineObj;
-			Map<Object, Object> item = Maps.newHashMap();
+			Map<Object, Object> item = Maps.newLinkedHashMap();
 			item.put("name", line.get("text") + ", " + period(data.get("period_from"), data.get("period_to")));
 			item.put("unitPrice", line.get("price"));
 			item.put("quantity", line.get("amount"));

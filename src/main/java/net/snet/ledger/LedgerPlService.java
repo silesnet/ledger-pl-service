@@ -25,20 +25,32 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
   @Override
   public void run(LedgerPlConfiguration conf, Environment env) throws ClassNotFoundException {
 
-		final Client httpClient = new JerseyClientBuilder()
-				.using(conf.getJerseyClientConfiguration())
-				.using(env)
-				.build();
+		final Client httpClient =
+				new JerseyClientBuilder()
+					.using(conf.getJerseyClientConfiguration())
+					.using(env)
+					.build();
 		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient, conf.getInsertGtConfig());
 
 		final ScheduledExecutorService executorService = env.managedScheduledExecutorService("loader", 2);
 
-	  final BatchFactory invoiceBatchFactory = new YamlBatchFactory(conf.getInvoiceBatchPrefix());
-		final LoadService loadInvoices = loadServiceFactory.newLoadService(conf.getInvoicePollUrl(), conf.getLoadInvoiceCmd(), invoiceBatchFactory);
+		final LoadServiceConfig loadInvoicesConfig =
+				new LoadServiceConfig.Builder()
+					.withPollUrl(conf.getInvoicePollUrl())
+					.withMapper(new InvoiceMapper(conf.getInsertVatMap()))
+					.withBatchFactory(new YamlBatchFactory(conf.getInvoiceBatchPrefix()))
+					.withLoadCommand(conf.getLoadInvoiceCmd())
+					.build();
+		final LoadService loadInvoices = loadServiceFactory.newLoadService(loadInvoicesConfig);
 		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
 
-//	  final BatchFactory customerBatchFactory = new YamlBatchFactory(conf.getCustomerBatchPrefix());
-//		final LoadService loadCustomers = loadServiceFactory.newLoadService(conf.getCustomerPollUrl(), conf.getLoadCustomerCmd(), customerBatchFactory);
+//		final LoadServiceConfig loadCustomersConfig = new LoadServiceConfig.Builder()
+//				.withPollUrl(conf.getCustomerPollUrl())
+//				.withMapper(new CustomerMapper())
+//				.withBatchFactory(new YamlBatchFactory(conf.getCustomerBatchPrefix()))
+//				.withLoadCommand(conf.getLoadCustomerCmd())
+//				.build();
+//		final LoadService loadCustomers = loadServiceFactory.newLoadService(loadCustomersConfig);
 //		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {

@@ -1,7 +1,17 @@
 var restify = require('restify');
 var CSON = require('cson');
 var invoices = CSON.parseFileSync(__dirname + '/invoices.cson');
+invoices.sort(cmpInvoiceNumber)
+
 var numberBase = 1396000000000;
+
+function cmpInvoiceNumber(a, b) {
+  if (a.number < b.number)
+    return -1;
+  if (a.number > b.number)
+    return 1;
+  return 0;
+}
 
 function formatJson(req, res, body) {
   if (!body) {

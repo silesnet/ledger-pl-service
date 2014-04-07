@@ -17,9 +17,9 @@ public class LoadServiceFactory {
 		this.insertGtConfig = insertGtConfig;
 	}
 
-	public LoadService newLoadService(String pollUrl, File cmd, BatchFactory batchFactory) {
-		final RestResource resource = new DefaultResource(httpClient, pollUrl);
-		final LoaderFactory loaderFactory = new InsertGtLoaderFactory(cmd, insertGtConfig);
-		return new LoadService(resource, batchFactory, loaderFactory);
+	public LoadService newLoadService(LoadServiceConfig config) {
+		final RestResource resource = new DefaultResource(httpClient, config.pollUrl());
+		final LoaderFactory loaderFactory = new InsertGtLoaderFactory(config.loadCommand(), insertGtConfig);
+		return new LoadService(resource, config.batchFactory(), loaderFactory, config.mapper());
 	}
 }
