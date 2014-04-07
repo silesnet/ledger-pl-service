@@ -120,15 +120,15 @@ Class InsertClass
     isDateValue = False
     If data.Exists(field) Then
       On Error Resume Next
-      tmp = "" & fromIsoDate(data, field)
+      tmp = "" & fromIsoDate(data.Item(field))
       On Error Goto 0
       If tmp <> "" Then isDateValue = True
     End If
   End Function
 
-  Private Function fromIsoDate(data, field)
+  Private Function fromIsoDate(value)
     Dim tokens
-    tokens = Split(data.Item(field), "-")
+    tokens = Split(value, "-")
     fromIsoDate = DateSerial(tokens(0), tokens(1), tokens(2))
   End Function
 

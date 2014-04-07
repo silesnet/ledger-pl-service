@@ -76,10 +76,11 @@ End Sub
 Sub testAddInvoice
   WScript.Echo "# it should add invoice"
   Dim ins, invoice
-  Set ins = insertOf("../Subiekt.xml")
+  Set ins = insertOf("Subiekt.xml")
   Set invoice = CreateObject("Scripting.Dictionary")
   ' invoice.Add "number", "1017"
   invoice.Add "customerId", "ABC"
+  invoice.Add "invoiceDate", "2014-04-15"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
   Dim item
@@ -89,14 +90,14 @@ Sub testAddInvoice
   item.Add "quantity", 0.3
   item.Add "unit", "mies."
   item.Add "vatId", 100002
-  WScript.Echo dumpMap(invoice, 0)
+  ' WScript.Echo dumpMap(invoice, 0)
   ins.addInvoice(invoice)
 End Sub
 
 Sub testInsertStart
   WScript.Echo "# it should start InsERT GT application"
   Dim ins
-  Set ins = insertOf("../Subiekt.xml")
+  Set ins = insertOf("Subiekt.xml")
   assert IsObject(ins), "start InsERT GT"
 End Sub
 
