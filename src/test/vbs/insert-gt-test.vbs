@@ -41,6 +41,11 @@ Sub testValidateInvoice
   assertValidInvoice ins, invoice
   id = ins.validateInvoice(invoice)
   assert (id = "1017"), "fetch invoice number"
+  item.Item("name") = "123456789012345678901234567890123456789012345678901"
+  assertNotValidInvoice ins, invoice
+  item.Item("name") = "12345678901234567890123456789012345678901234567890"
+  assertValidInvoice ins, invoice
+
   ' WScript.Echo dumpMap(invoice, 0)
   invoice.Item("items").Add 1, CreateObject("Scripting.Dictionary")
   assertNotValidInvoice ins, invoice

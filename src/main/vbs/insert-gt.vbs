@@ -44,18 +44,19 @@ Class InsertClass
   End Sub
 
   Public Function validateInvoice(data)
-    assertHasLength data, "number", "invoice number is missing"
-    assertHasLength data, "customerId", "customer id is missing"
+    assertHasLength data, "number", "invoice number 'number' is missing"
+    assertHasLength data, "customerId", "customer id 'customerId' is missing"
     If data.Exists("items") Then
       Dim items, itemKey, itemData
       Set items = data.Item("items")
       For Each itemKey In items.Keys
         Set itemData = items.Item(itemKey)
-        assertHasLength itemData, "name", "item name is missing"
-        assertIsNumeric itemData, "unitPrice", "unit price is missing or invalid"
-        assertIsNumeric itemData, "quantity", "quantity is missing or invalid"
-        assertHasLength itemData, "unit", "unit is missing"
-        assertIsNumeric itemData, "vatId", "vatId is missing or invalid"
+        assertHasLength itemData, "name", "item name 'items[].name' is missing"
+        assertLengthIsUpTo itemData, "name", 50, "item name 'items[].name' is too long (max length 50)"
+        assertIsNumeric itemData, "unitPrice", "unit price 'items[].unitPrice' is invalid or missing"
+        assertIsNumeric itemData, "quantity", "quantity 'items[].quantity' is invalid or missing"
+        assertHasLength itemData, "unit", "unit 'items[].unit' is missing"
+        assertIsNumeric itemData, "vatId", "vatId 'items[].vatId' is invalid or missing"
       Next
     End If
     validateInvoice = data.Item("number")
@@ -97,6 +98,10 @@ Class InsertClass
     If Not isNumericValue(data, field) Then Err.Raise 1001, "validate", msg
   End Sub
 
+  Private Sub assertLengthIsUpTo(data, field, length, msg)
+    If Not isLengthUpTo(data, field, length) Then Err.Raise 1001, "validate", msg
+  End Sub
+
   Private Function isNumericValue(data, field)
     isNumericValue = False
     If data.Exists(field) Then
@@ -108,6 +113,13 @@ Class InsertClass
     hasLength = False
     If data.Exists(field) Then
       If Len(Trim("" & data.Item(field))) > 0 Then hasLength = True
+    End If
+  End Function
+
+  Private Function isLengthUpTo(data, field, length)
+    isLengthUpTo = False
+    If data.Exists(field) Then
+      If Len(data.Item(field)) <= length Then isLengthUpTo = True
     End If
   End Function
 
