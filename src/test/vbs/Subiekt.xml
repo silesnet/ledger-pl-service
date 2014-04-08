@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='windows-1250' ?>
+<cfg>
+	<startup>
+<sql_server>(LOCAL)\InsERTGT</sql_server>
+<auth_mode>MIXED</auth_mode>
+<sql_login encrypted='0'>sa</sql_login>
+<database>Silesnet4</database>
+<login encrypted='0'>Szef\haslo</login>
+	</startup>
+</cfg>
