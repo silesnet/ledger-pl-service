@@ -25,6 +25,7 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("customerId", ((Map) data.get("customer")).get("symbol"));
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
+		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
 		final ArrayList<Object> items = Lists.newArrayList();
 		invoice.put("items", items);
 		for (Object lineObj : (Collection) data.get("lines")) {
@@ -61,5 +62,8 @@ public class InvoiceMapper implements Mapper {
 		return new DateTime(date).toString("yyyy-MM-dd");
 	}
 
+	private String lastOfInvoicingMonth(Object date) {
+		return new DateTime(date).dayOfMonth().withMaximumValue().toString("yyyy-MM-dd");
+	}
 
 }

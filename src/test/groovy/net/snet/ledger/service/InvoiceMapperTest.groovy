@@ -19,6 +19,7 @@ class InvoiceMapperTest extends Specification {
 		insert.customerId == 'AB-5578'
 		insert.invoiceDate == '2014-04-04'
 		insert.dueDate == '2014-04-18'
+		insert.deliveryDate == '2014-04-30'
 		insert.items[0].name == 'WIRELESSmax  10/2 Mbps, 04/2014'
 		insert.items[0].unitPrice == 48.0
 		insert.items[0].quantity == 1.0
