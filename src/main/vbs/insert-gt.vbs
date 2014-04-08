@@ -27,7 +27,7 @@ Class InsertClass
   Private Sub Class_Terminate
     debug "destroying InsERT GT"
     If isInitialized Then
-      ' instance.Zakoncz
+      instance.Zakoncz
     End If
   End Sub
 
@@ -48,6 +48,7 @@ Class InsertClass
     assertHasLength data, "customerId", "customer id 'customerId' is missing"
     assertIsDate data, "invoiceDate", "invoice date 'invoiceDate' is invalid or missing"
     assertIsDate data, "dueDate", "due date 'dueDate' is invalid or missing"
+    assertIsDate data, "deliveryDate", "due date 'dueDate' is invalid or missing"
     If data.Exists("items") Then
       Dim items, itemKey, itemData
       Set items = data.Item("items")
@@ -73,6 +74,7 @@ Class InsertClass
     invoice.Numer = data.Item("number")
     invoice.KontrahentId = data.Item("customerId")
     invoice.DataWystawienia = fromIsoDate(data.Item("invoiceDate"))
+    invoice.DataZakonczeniaDostawy = fromIsoDate(data.Item("deliveryDate"))
     Set itemsCol = data.Item("items")
     For Each itemIdx In itemsCol
       debug itemIdx
