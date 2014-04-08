@@ -8,7 +8,7 @@ testAll
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
   ' testInsertStart
-  testAddInvoice
+  ' testAddInvoice
   testValidateInvoice
   WScript.Echo "PASSED"
 End Sub
@@ -24,7 +24,9 @@ Sub testValidateInvoice
   invoice.Add "customerId", "ABC"
   assertNotValidInvoice ins, invoice, "customerId added"
   invoice.Add "invoiceDate", "2014-04-15"
-  assertValidInvoice ins, invoice, "invoiceDate added"
+  assertNotValidInvoice ins, invoice, "invoiceDate added"
+  invoice.Add "dueDate", "2014-04-22"
+  assertValidInvoice ins, invoice, "dueDate added"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   assertValidInvoice ins, invoice, "empty items added"
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
@@ -83,16 +85,17 @@ Sub testAddInvoice
   ' invoice.Add "number", 5018
   invoice.Add "customerId", "ABC"
   invoice.Add "invoiceDate", "2014-04-15"
+  invoice.Add "dueDate", "2014-04-22"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
   Dim item
   Set item = invoice.Item("items").Item(0)
   item.Add "name", "Wireless +"
-  item.Add "unitPrice", 50.5
-  item.Add "quantity", 1.2
+  item.Add "unitPrice", "50.5"
+  item.Add "quantity", "1.2"
   item.Add "unit", "mies."
-  item.Add "vatId", 100001
-  item.Add "vatPct", 23
+  item.Add "vatId", "100001"
+  item.Add "vatPct", "23"
   ins.addInvoice(invoice)
 End Sub
 
