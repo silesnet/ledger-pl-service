@@ -88,12 +88,12 @@ Class InsertClass
       If invoiceItem.VatProcent <> CInt(itemObj.Item("vatPct")) Then
         Err.Raise 1002, "addInvoice", "vatId '" & itemObj.Item("vatId") & "' and vatPct '"  & itemObj.Item("vatPct") & "' does not match"
       End If
-      invoice.Przelicz
-      invoice.PlatnoscKredytKwota = invoice.KwotaDoZaplaty
-      invoice.PlatnoscKredytTermin = fromIsoDate(data.Item("dueDate"))
-      invoice.Zapisz
-      invoice.Zamknij
     Next
+    invoice.Przelicz
+    invoice.PlatnoscKredytKwota = invoice.KwotaDoZaplaty
+    invoice.PlatnoscKredytTermin = fromIsoDate(data.Item("dueDate"))
+    invoice.Zapisz
+    invoice.Zamknij
   End Sub
 
   Public Function validateCustomer(data)

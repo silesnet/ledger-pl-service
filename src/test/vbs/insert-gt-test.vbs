@@ -8,8 +8,8 @@ testAll
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
   ' testInsertStart
-  ' testAddInvoice
-  testValidateInvoice
+  testAddInvoice
+  ' testValidateInvoice
   WScript.Echo "PASSED"
 End Sub
 
@@ -94,6 +94,14 @@ Sub testAddInvoice
   Dim item
   Set item = invoice.Item("items").Item(0)
   item.Add "name", "Wireless +"
+  item.Add "unitPrice", "50.5"
+  item.Add "quantity", "1.2"
+  item.Add "unit", "mies."
+  item.Add "vatId", "100001"
+  item.Add "vatPct", "23"
+  invoice.Item("items").Add 1, CreateObject("Scripting.Dictionary")
+  Set item = invoice.Item("items").Item(1)
+  item.Add "name", "Wireless ++"
   item.Add "unitPrice", "50.5"
   item.Add "quantity", "1.2"
   item.Add "unit", "mies."
