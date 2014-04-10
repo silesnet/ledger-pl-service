@@ -7,12 +7,23 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST yaml-parser..."
+  testParseUtf8
   testParseLedgerInvoice
   testIterator
   testEmptyYaml
   testParsedValues
   testFetchCollection
   WScript.Echo "PASSED"
+End Sub
+
+Sub testParseUtf8()
+  WScript.Echo "# it should parse utf8 strings"
+  Dim yaml
+  Set yaml = yamlOf("fixtures/utf8.yml")
+  Dim doc
+  Set doc = yaml.nextDocument()
+  ' WScript.Echo doc.Item("name")
+  assert fetch(doc, "name") = """łą'""", "fetch utf8 string from name"
 End Sub
 
 Sub testParseLedgerInvoice
@@ -37,8 +48,8 @@ Sub testParseLedgerInvoice
   assert fetch(doc, "invoiceDate") = "2014-04-04", "fetch 'invoiceDate' failed"
   assert fetch(doc, "dueDate") = "2014-04-18", "fetch 'dueDate' failed"
   assert fetch(doc, "items.0.name") = "WIRELESSmax  25/2 Mbps, 04/2014", "fetch 'items.1.name' failed"
-  assert fetch(doc, "items.0.unitPrice") = 78, "fetch 'items.1.unitPrice' failed"
-  assert fetch(doc, "items.0.quantity") = 1, "fetch 'items.0.quantity' failed"
+  assert fetch(doc, "items.0.unitPrice") = 78.5, "fetch 'items.1.unitPrice' failed"
+  assert fetch(doc, "items.0.quantity") = 1.2, "fetch 'items.0.quantity' failed"
   assert fetch(doc, "items.0.unit") = "mies.", "fetch 'items.0.unit' failed"
   assert fetch(doc, "items.0.vatId") = 100001, "fetch 'items.0.vatId' failed"
   assert fetch(doc, "items.0.vatPct") = 23, "fetch 'items.0.vatPct' failed"
