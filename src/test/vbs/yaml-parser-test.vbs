@@ -20,10 +20,10 @@ Sub testParseUtf8()
   WScript.Echo "# it should parse utf8 strings"
   Dim yaml
   Set yaml = yamlOf("fixtures/utf8.yml")
-  Dim doc
+  Dim doc, expected
   Set doc = yaml.nextDocument()
-  ' WScript.Echo doc.Item("name")
-  assert fetch(doc, "name") = """łą'""", "fetch utf8 string from name"
+  expected = UTF8_Decode("""łą'""")
+  assert fetch(doc, "name") = expected, "fetch utf8 string from name"
 End Sub
 
 Sub testParseLedgerInvoice
@@ -119,3 +119,52 @@ End Sub
 Sub include(file)
   ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
 End Sub
+
+
+Public Function toUtf8(astr)
+  Dim c, n
+  Dim utftext
+  utftext = ""
+  If isNull(astr) = false or astr <> "" Then
+    astr = Replace(astr, "’", "'") 'replacing the apostrophe
+    astr = Replace(astr, "–", "-") 'replacing the emdash with minus sign
+    For n = 1 To Len(astr)
+      c = Asc(Mid(astr, n, 1))
+      If c < 128 Then
+        utftext = utftext + Mid(astr, n, 1)
+      ElseIf ((c > 127) And (c < 2048)) Then
+        utftext = utftext + Chr(((c \ 64) Or 192))
+        utftext = utftext + Chr(((c And 63) Or 128))
+      Else
+        utftext = utftext + Chr(((c \ 144) Or 234))
+        utftext = utftext + Chr((((c \ 64) And 63) Or 128))
+        utftext = utftext + Chr(((c And 63) Or 128))
+      End If
+    Next
+  End If
+  toUtf8 = utftext
+End Function
+
+'http://p2p.wrox.com/vbscript/29099-unicode-utf-8-system-text-utf8encoding-vba.html#post272370
+Function UTF8_Decode(sStr)
+    Dim l, sUTF8, iChar, iChar2
+    For l = 1 To Len(sStr)
+        iChar = Asc(Mid(sStr, l, 1))
+        If iChar > 127 Then
+            If Not iChar And 32 Then ' 2 chars
+            iChar2 = Asc(Mid(sStr, l + 1, 1))
+            sUTF8 = sUTF8 & ChrW(((31 And iChar) * 64 + (63 And iChar2)))
+            l = l + 1
+        Else
+            Dim iChar3
+            iChar2 = Asc(Mid(sStr, l + 1, 1))
+            iChar3 = Asc(Mid(sStr, l + 2, 1))
+            sUTF8 = sUTF8 & ChrW(((iChar And 15) * 16 * 256) + ((iChar2 And 63) * 64) + (iChar3 And 63))
+            l = l + 2
+        End If
+            Else
+            sUTF8 = sUTF8 & Chr(iChar)
+        End If
+    Next
+    UTF8_Decode = sUTF8
+End Function

@@ -1,5 +1,8 @@
 Option Explicit
 
+Const adTypeText = 2
+Const adReadLine = -2
+
 Function yamlOf(input)
   Dim yaml
   Set yaml = new YamlParserClass
@@ -31,14 +34,18 @@ Class YamlParserClass
   Public Sub setInput(file)
     debug "initializing yaml parser with '" & file & "'"
     assertNotInitialized
-    Set input = CreateObject("Scripting.FileSystemObject").OpenTextFile(file, 1)
+    Set input = CreateObject("ADODB.Stream")
+    input.Type = adTypeText
+    input.CharSet = "utf-8"
+    input.Open
+    input.LoadFromFile file
     moveToNext
     isInitialized = True
   End Sub
 
   Public Function hasNext
     assertInitialized
-    hasNext = (Not input.AtEndOfStream) And (currentLine = "---")
+    hasNext = (Not input.EOS) And (currentLine = "---")
   End Function
 
   Public Function nextDocument
@@ -49,8 +56,8 @@ Class YamlParserClass
     hierarchy.Add 0, CreateObject("Scripting.Dictionary")
     prevLevel = 0
     Do
-      currentLine = input.ReadLine
-      If input.AtEndOfStream Or currentLine = "---" Or currentLine = "..." Then Exit Do
+      currentLine = input.ReadText(adReadLine)
+      If input.EOS Or currentLine = "---" Or currentLine = "..." Then Exit Do
       If Left(LTrim(currentLine), 1) <> "#" Then
         Set matches = lineRegex.Execute(currentLine)
         If matches.Count > 0 Then
@@ -101,8 +108,8 @@ Class YamlParserClass
   End Sub
 
   Private Sub moveToNext
-    Do Until input.AtEndOfStream Or currentLine = "---" Or currentLine = "..."
-      currentLine = input.ReadLine
+    Do Until input.EOS Or currentLine = "---" Or currentLine = "..."
+      currentLine = input.ReadText(adReadLine)
     Loop
   End Sub
 

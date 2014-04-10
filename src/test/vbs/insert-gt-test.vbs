@@ -8,8 +8,8 @@ testAll
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
   ' testInsertStart
-  testAddInvoice
-  ' testValidateInvoice
+  ' testAddInvoice
+  testValidateInvoice
   WScript.Echo "PASSED"
 End Sub
 
