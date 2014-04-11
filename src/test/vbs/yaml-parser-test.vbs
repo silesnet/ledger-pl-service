@@ -7,6 +7,7 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST yaml-parser..."
+  testParseEscapedChars
   testParseUtf8
   testParseLedgerInvoice
   testIterator
@@ -15,6 +16,17 @@ Sub testAll
   testFetchCollection
   WScript.Echo "PASSED"
 End Sub
+
+Sub testParseEscapedChars()
+  WScript.Echo "# it should parse escaped chars"
+  Dim yaml
+  Set yaml = yamlOf("fixtures/escaped.yml")
+  Dim doc, expected
+  Set doc = yaml.nextDocument()
+  assert fetch(doc, "name") = """NAME""", "fetch escaped string from name"
+  assert fetch(doc, "info") = "info "" # ", "fetch escaped string from info"
+End Sub
+
 
 Sub testParseUtf8()
   WScript.Echo "# it should parse utf8 strings"

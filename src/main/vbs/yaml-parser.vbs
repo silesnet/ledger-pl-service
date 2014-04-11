@@ -60,7 +60,7 @@ Class YamlParserClass
     hierarchy.Add 0, CreateObject("Scripting.Dictionary")
     prevLevel = 0
     Do
-      currentLine = input.ReadText(adReadLine)
+      currentLine = readLine()
       If input.EOS Or currentLine = "---" Or currentLine = "..." Then Exit Do
       If Left(LTrim(currentLine), 1) <> "#" Then
         Set matches = lineRegex.Execute(currentLine)
@@ -113,9 +113,13 @@ Class YamlParserClass
 
   Private Sub moveToNext
     Do Until input.EOS Or currentLine = "---" Or currentLine = "..."
-      currentLine = input.ReadText(adReadLine)
+      currentLine = readLine()
     Loop
   End Sub
+
+  Private Function readLine()
+    readLine = Replace(input.ReadText(adReadLine), "\", "")
+  End Function
 
   Private Sub assertNotInitialized
     If isInitialized Then Err.Raise 1, "YamlParser", "already initialized"
