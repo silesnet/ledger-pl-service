@@ -2,6 +2,9 @@ Option Explicit
 
 Const adTypeText = 2
 Const adReadLine = -2
+Const adCRLF = -1
+Const adLF = 10
+Const adCR = 13
 
 Function yamlOf(input)
   Dim yaml
@@ -37,6 +40,7 @@ Class YamlParserClass
     Set input = CreateObject("ADODB.Stream")
     input.Type = adTypeText
     input.CharSet = "utf-8"
+    input.LineSeparator = adLF
     input.Open
     input.LoadFromFile file
     moveToNext
