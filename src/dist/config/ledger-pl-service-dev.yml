@@ -1,4 +1,5 @@
 insertGtConfig: Subiekt.xml
+accountantName: Jan Kowalski
 insertVatMap:
   0: 4
   8: 100002

@@ -11,7 +11,7 @@ class InvoiceMapperTest extends Specification {
 	def 'it should map SIS invoice to InsERT invoice'() {
 	given:
 		def sis = fixture()
-		def mapper = new InvoiceMapper(pctToIdMap)
+		def mapper = new InvoiceMapper(pctToIdMap, 'Jan Kowalski')
   when:
 		def insert = mapper.map(sis)
 	then:
@@ -23,6 +23,7 @@ class InvoiceMapperTest extends Specification {
 		insert.invoiceDate == '2014-04-04'
 		insert.dueDate == '2014-04-18'
 		insert.deliveryDate == '2014-04-30'
+		insert.accountantName == 'Jan Kowalski'
 		insert.items.get(0).name == 'WIRELESSmax  10/2 Mbps, 04/2014'
 		insert.items.get(0).unitPrice == 48.0
 		insert.items.get(0).quantity == 1.0
@@ -37,7 +38,7 @@ class InvoiceMapperTest extends Specification {
 			sis.remove('period_to')
 			sis.period_from = 1406303200000
 
-		def mapper = new InvoiceMapper(pctToIdMap)
+		def mapper = new InvoiceMapper(pctToIdMap, 'AN')
 		when:
 			def insert = mapper.map(sis)
 		then:
@@ -48,7 +49,7 @@ class InvoiceMapperTest extends Specification {
 		given:
 			def sis = fixture()
 			sis.lines[0].is_display_unit = false
-			def mapper = new InvoiceMapper(pctToIdMap)
+			def mapper = new InvoiceMapper(pctToIdMap, 'AN')
 		when:
 			def insert = mapper.map(sis)
 		then:

@@ -60,7 +60,15 @@ public class LedgerPlConfiguration extends Configuration {
 	@NotNull
 	private File loadCustomerCmd;
 
+	@Valid
+	@JsonProperty
+	@NotNull
 	private Map<Integer, Integer> insertVatMap;
+
+	@Valid
+	@JsonProperty
+	@NotNull
+	private String accountantName;
 
 	public Boolean getJsonPrettyPrint() {
 		return jsonPrettyPrint;
@@ -108,5 +116,9 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public Map<Integer, Integer> getInsertVatMap() {
 		return insertVatMap;
+	}
+
+	public String getAccountantName() {
+		return accountantName;
 	}
 }

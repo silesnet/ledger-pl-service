@@ -75,6 +75,7 @@ Class InsertClass
     invoice.KontrahentId = data.Item("customerId")
     invoice.DataWystawienia = fromIsoDate(data.Item("invoiceDate"))
     invoice.DataZakonczeniaDostawy = fromIsoDate(data.Item("deliveryDate"))
+    invoice.Wystawil = data.Item("accountantName")
     Set itemsCol = data.Item("items")
     For Each itemIdx In itemsCol
       debug itemIdx

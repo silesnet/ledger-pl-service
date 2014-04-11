@@ -37,7 +37,7 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 		final LoadServiceConfig loadInvoicesConfig =
 				new LoadServiceConfig.Builder()
 					.withPollUrl(conf.getInvoicePollUrl())
-					.withMapper(new InvoiceMapper(conf.getInsertVatMap()))
+					.withMapper(new InvoiceMapper(conf.getInsertVatMap(), conf.getAccountantName()))
 					.withBatchFactory(new YamlBatchFactory(conf.getInvoiceBatchPrefix()))
 					.withLoadCommand(conf.getLoadInvoiceCmd())
 					.build();

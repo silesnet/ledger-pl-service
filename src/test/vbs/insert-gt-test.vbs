@@ -89,6 +89,7 @@ Sub testAddInvoice
   invoice.Add "invoiceDate", "2014-04-15"
   invoice.Add "dueDate", "2014-04-22"
   invoice.Add "deliveryDate", "2014-04-30"
+  invoice.Add "accountantName", "Jan Kowalski"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
   Dim item

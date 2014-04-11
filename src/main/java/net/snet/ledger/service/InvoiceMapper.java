@@ -13,9 +13,11 @@ import java.util.Map;
  */
 public class InvoiceMapper implements Mapper {
 	private final Map<Integer, Integer> pctToIdMap;
+	private final String accountantName;
 
-	public InvoiceMapper(Map<Integer, Integer> pctToIdMap) {
+	public InvoiceMapper(Map<Integer, Integer> pctToIdMap, String accountantName) {
 		this.pctToIdMap = pctToIdMap;
+		this.accountantName = accountantName;
 	}
 
 	@Override
@@ -29,6 +31,7 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
 		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
+		invoice.put("accountantName", accountantName);
 		final ArrayList<Object> items = Lists.newArrayList();
 		invoice.put("items", items);
 		for (Object lineObj : (Collection) data.get("lines")) {
