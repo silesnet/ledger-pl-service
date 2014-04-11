@@ -48,12 +48,12 @@ public class LoadService implements Runnable {
 
 			LOGGER.info("processing load journal...");
 			final DateTime now = new DateTime();
-			final List patches = Lists.newArrayList();
+			final List<Map> patches = Lists.newArrayList();
 			while (journal.hasNext()) {
 				final Record record = journal.next();
 				if (record.isOk()) {
 					LOGGER.info("loaded '{}'", record.id());
-					final Map patch = Maps.newHashMap();
+					final Map<String, Object> patch = Maps.newHashMap();
 					patch.put("id", record.id());
 					patch.put("synchronized", now);
 					patches.add(patch);

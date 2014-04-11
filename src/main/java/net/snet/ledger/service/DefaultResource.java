@@ -20,35 +20,40 @@ import java.util.Map;
 public class DefaultResource implements RestResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResource.class);
 
-	private final WebResource resource;
-	private final URL url;
+	private final WebResource pollResource;
+	private final WebResource patchResource;
 	private final String name;
 
-	public DefaultResource(Client httpClient, String url) {
+	public DefaultResource(Client httpClient, String poll) {
 		try {
-			this.url = new URL(url);
-			name = new File(this.url.getPath()).getName();
+			URL pollUrl = new URL(poll);
+			URL patchUrl =  new URL(pollUrl.getProtocol() + "://" + pollUrl.getAuthority() + pollUrl.getPath());
+			pollResource = httpClient.resource(pollUrl.toString());
+			patchResource = httpClient.resource(patchUrl.toString());
+			name = new File(patchUrl.getPath()).getName();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
-		this.resource = httpClient.resource(url);
 	}
 
 	@Override
 	public List poll() {
-		LOGGER.debug("polling for '{}' from '{}'..", name, url);
-		final Map response = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(Map.class);
+		LOGGER.debug("polling for '{}' from '{}'..", name, pollResource.getURI());
+		final Map response = pollResource.accept(MediaType.APPLICATION_JSON_TYPE).get(Map.class);
 		return (List) response.get(name);
 	}
 
 	@Override
 	public void patch(List items) {
-		Map patch = Maps.newHashMap();
+		Map<String, List> patch = Maps.newHashMap();
 		patch.put(name, items);
-		LOGGER.debug("executing PUT to '{}'", url);
-		ClientResponse response = resource
+		LOGGER.debug("executing PUT to '{}'", patchResource.getURI());
+		ClientResponse response = patchResource
 				.accept(MediaType.APPLICATION_JSON_TYPE)
 				.type(MediaType.APPLICATION_JSON_TYPE)
 				.put(ClientResponse.class, patch);
+		if (response.getStatus() != 200) {
+			throw new RuntimeException("Failed to patch '" + name + "' resource");
+		}
 	}
 }

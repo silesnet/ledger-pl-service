@@ -6,7 +6,7 @@ import spock.lang.Specification
  * Created by admin on 7.4.14.
  */
 class InvoiceMapperTest extends Specification {
-	def pctToIdMap = [ 23: 100001 ]
+	Map pctToIdMap = [ 23: 100001 ]
 
 	def 'it should map SIS invoice to InsERT invoice'() {
 	given:
@@ -23,12 +23,12 @@ class InvoiceMapperTest extends Specification {
 		insert.invoiceDate == '2014-04-04'
 		insert.dueDate == '2014-04-18'
 		insert.deliveryDate == '2014-04-30'
-		insert.items[0].name == 'WIRELESSmax  10/2 Mbps, 04/2014'
-		insert.items[0].unitPrice == 48.0
-		insert.items[0].quantity == 1.0
-		insert.items[0].unit == 'mies.'
-		insert.items[0].vatId == 100001
-		insert.items[0].vatPct == 23
+		insert.items.get(0).name == 'WIRELESSmax  10/2 Mbps, 04/2014'
+		insert.items.get(0).unitPrice == 48.0
+		insert.items.get(0).quantity == 1.0
+		insert.items.get(0).unit == 'mies.'
+		insert.items.get(0).vatId == 100001
+		insert.items.get(0).vatPct == 23
 	}
 
 	def 'it should map item.name when period_to is null'() {
@@ -41,7 +41,7 @@ class InvoiceMapperTest extends Specification {
 		when:
 			def insert = mapper.map(sis)
 		then:
-			insert.items[0].name == 'WIRELESSmax  10/2 Mbps, 07/2014'
+			insert.items.get(0).name == 'WIRELESSmax  10/2 Mbps, 07/2014'
 	}
 
 	def 'it should map unit when is_display_unit is false'() {
@@ -52,7 +52,7 @@ class InvoiceMapperTest extends Specification {
 		when:
 			def insert = mapper.map(sis)
 		then:
-			insert.items[0].unit == 'szt.'
+			insert.items.get(0).unit == 'szt.'
 	}
 
 	def fixture() {
