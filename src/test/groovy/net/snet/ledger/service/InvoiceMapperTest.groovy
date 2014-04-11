@@ -16,7 +16,10 @@ class InvoiceMapperTest extends Specification {
 		def insert = mapper.map(sis)
 	then:
 		insert.number == '4451'
+		insert.originalNumber == '201404451'
 		insert.customerId == 'AB-5578'
+    insert.customerOriginalId == 12345
+		insert.customerName == 'NAME'
 		insert.invoiceDate == '2014-04-04'
 		insert.dueDate == '2014-04-18'
 		insert.deliveryDate == '2014-04-30'
@@ -69,6 +72,8 @@ class InvoiceMapperTest extends Specification {
 						]
 				],
 				customer: [
+            id: 12345,
+            name: 'NAME',
 						symbol : "AB-5578"
 				]
 		]

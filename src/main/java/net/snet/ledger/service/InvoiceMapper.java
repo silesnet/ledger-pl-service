@@ -22,7 +22,10 @@ public class InvoiceMapper implements Mapper {
 	public Map map(Map data) {
 		final Map<Object, Object> invoice = Maps.newLinkedHashMap();
 		invoice.put("number", invoiceNumber(data.get("number")));
+		invoice.put("originalNumber", data.get("number"));
 		invoice.put("customerId", ((Map) data.get("customer")).get("symbol"));
+		invoice.put("customerOriginalId", ((Map) data.get("customer")).get("id"));
+		invoice.put("customerName", ((Map) data.get("customer")).get("name"));
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
 		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
