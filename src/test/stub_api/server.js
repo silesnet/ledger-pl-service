@@ -1,7 +1,6 @@
 var restify = require('restify');
 var CSON = require('cson');
-var invoices = CSON.parseFileSync(__dirname + '/invoices.cson');
-invoices.sort(cmpInvoiceNumber)
+var invoices;
 
 var numberBase = 1396000000000;
 
@@ -57,10 +56,12 @@ server.use(restify.CORS());
 
 server.get('/invoices', function (req, res, next) {
   var invoice, base;
-  base = (new Date()).getTime() - numberBase;
-  for (var i = 0; i < invoices.length; i++) {
-    invoices[i].number = '' + (base + i);
-  }
+  invoices = CSON.parseFileSync(__dirname + '/invoices.cson');
+
+  // base = (new Date()).getTime() - numberBase;
+  // for (var i = 0; i < invoices.length; i++) {
+  //   invoices[i].number = '' + (base + i);
+  // }
   res.send({'invoices': invoices});
   return next();
 });

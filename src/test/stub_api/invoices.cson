@@ -1,43 +1,67 @@
 # this is coffee script object notation
 [
   {
-    number: "1234"
-    customerId: "CUST1"
-    items: [
+    number: '201401234'
+    billing_date: 1397469403000
+    purge_date: 1398678994000
+    vat: 23
+    customer:
+      id: 1233
+      symbol: 'CUST1'
+      name: 'Customer 1'
+    lines: [
       {
-        name: "Wireless +"
-        unitPrice: 10
-        quantity: 1
-        unit: "mies."
+        text: 'Wireless +'
+        price: 10
+        amount: 1
         vatId: 100001
+        vatPct: 23
+        is_display_unit: true
       }
     ]
   }
   {
-    number: "1234"
-    customerId: "CUST2"
-    items: [
+    number: '201401235'
+    billing_date: 1397469403000
+    purge_date: 1398678994000
+    vat: 23
+    customer:
+      id: 1234
+      symbol: 'CUST2'
+      name: 'Customer 2'
+    lines: [
       {
-        name: "Wireless +"
-        unitPrice: 10
-        quantity: 1
-        unit: "mies."
-        vatId: 100001
+        text: 'Wireless +'
+        price: 20
+        amount: 1
+        is_display_unit: true
       }
     ]
   }
   {
-    number: "1234"
-    customerId: "CUST3"
-    items: [
+    number: '201401236'
+    billing_date: 1397469403000
+    purge_date: 1398678994000
+    vat: 23
+    customer:
+      id: 1235
+      symbol: 'CUST3'
+      name: 'Customer 3'
+    lines: [
       {
-        name: "Wireless +"
-        unitPrice: 10
-        quantity: 1
-        unit: "mies."
-        vatId: 100001
+        text: 'Wireless +'
+        price: 10
+        amount: 1
+        is_display_unit: true
+      }
+      {
+        text: 'Wireless --'
+        price: 1
+        amount: 1
+        is_display_unit: false
       }
     ]
   }
+
 
 ]
