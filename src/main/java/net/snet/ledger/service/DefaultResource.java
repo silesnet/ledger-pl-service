@@ -38,13 +38,14 @@ public class DefaultResource implements RestResource {
 
 	@Override
 	public List poll() {
-		LOGGER.debug("polling for '{}' from '{}'..", name, pollResource.getURI());
+		LOGGER.debug("polling for '{}' from '{}'...", name, pollResource.getURI());
 		final Map response = pollResource.accept(MediaType.APPLICATION_JSON_TYPE).get(Map.class);
 		return (List) response.get(name);
 	}
 
 	@Override
 	public void patch(List items) {
+		LOGGER.debug("patching '{}' at '{}'...", name, pollResource.getURI());
 		Map<String, List> patch = Maps.newHashMap();
 		patch.put(name, items);
 		LOGGER.debug("executing PUT to '{}'", patchResource.getURI());

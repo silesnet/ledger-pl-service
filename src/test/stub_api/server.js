@@ -2,15 +2,15 @@ var restify = require('restify');
 var CSON = require('cson');
 var invoices;
 
-var numberBase = 1396000000000;
+// var numberBase = 1396000000000;
 
-function cmpInvoiceNumber(a, b) {
-  if (a.number < b.number)
-    return -1;
-  if (a.number > b.number)
-    return 1;
-  return 0;
-}
+// function cmpInvoiceNumber(a, b) {
+//   if (a.number < b.number)
+//     return -1;
+//   if (a.number > b.number)
+//     return 1;
+//   return 0;
+// }
 
 function formatJson(req, res, body) {
   if (!body) {
@@ -53,6 +53,7 @@ server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 server.use(restify.CORS());
+// server.use(restify.fullResponse());
 
 server.get('/invoices', function (req, res, next) {
   var invoice, base;
@@ -63,6 +64,12 @@ server.get('/invoices', function (req, res, next) {
   //   invoices[i].number = '' + (base + i);
   // }
   res.send({'invoices': invoices});
+  return next();
+});
+
+server.put('/invoices', function(req, res, next) {
+  console.log(req.body);
+  res.send(200, {});
   return next();
 });
 

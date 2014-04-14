@@ -18,4 +18,7 @@ loadCustomerCmd: src/dist/bin/load-customers.cmd
 logging:
   level: INFO
 
+  loggers:
+    "net.snet.ledger": DEBUG
+
 jsonPrettyPrint: true
