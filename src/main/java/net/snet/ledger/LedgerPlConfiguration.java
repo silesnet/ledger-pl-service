@@ -7,9 +7,13 @@ import com.yammer.dropwizard.config.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 public class LedgerPlConfiguration extends Configuration {
+	@Valid
+	@JsonProperty
+	private File appHome;
 
 	@Valid
 	@JsonProperty
@@ -95,23 +99,23 @@ public class LedgerPlConfiguration extends Configuration {
 	}
 
 	public File getInvoiceBatchPrefix() {
-		return invoiceBatchPrefix;
+		return new File(appHome, invoiceBatchPrefix.toString());
 	}
 
 	public File getCustomerBatchPrefix() {
-		return customerBatchPrefix;
+		return new File(appHome, customerBatchPrefix.toString());
 	}
 
 	public File getInsertGtConfig() {
-		return insertGtConfig;
+		return new File(appHome, insertGtConfig.toString());
 	}
 
 	public File getLoadInvoiceCmd() {
-		return loadInvoiceCmd;
+		return new File(appHome, loadInvoiceCmd.toString());
 	}
 
 	public File getLoadCustomerCmd() {
-		return loadCustomerCmd;
+		return new File(appHome, loadCustomerCmd.toString());
 	}
 
 	public Map<Integer, Integer> getInsertVatMap() {
@@ -120,5 +124,13 @@ public class LedgerPlConfiguration extends Configuration {
 
 	public String getAccountantName() {
 		return accountantName;
+	}
+
+	public File getAppHome() {
+		try {
+			return appHome.getCanonicalFile();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

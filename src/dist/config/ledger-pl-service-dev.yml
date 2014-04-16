@@ -1,3 +1,5 @@
+appHome: ".."
+
 insertGtConfig: Subiekt.xml
 accountantName: Jan Kowalski
 insertVatMap:
@@ -7,17 +9,16 @@ insertVatMap:
 
 invoicePollDelay: 2000
 invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load
-invoiceBatchPrefix: build/work/invoice-pl-load-
-loadInvoiceCmd: src/dist/bin/load-invoices.cmd
+invoiceBatchPrefix: work/invoice-pl-load-
+loadInvoiceCmd: bin/load-invoices.cmd
 
 customerPollDelay: 1000
 customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
-customerBatchPrefix: build/work/customer-pl-load-
-loadCustomerCmd: src/dist/bin/load-customers.cmd
+customerBatchPrefix: work/customer-pl-load-
+loadCustomerCmd: bin/load-customers.cmd
 
 logging:
   level: INFO
-
   loggers:
     "net.snet.ledger": DEBUG
 

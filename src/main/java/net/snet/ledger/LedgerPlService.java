@@ -8,11 +8,16 @@ import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import net.snet.ledger.resources.LedgerPlResource;
 import net.snet.ledger.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LedgerPlService extends Service<LedgerPlConfiguration> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(LedgerPlService.class);
+
   public static void main(String[] args) throws Exception {
     new LedgerPlService().run(args);
   }
@@ -24,6 +29,7 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 
   @Override
   public void run(LedgerPlConfiguration conf, Environment env) throws ClassNotFoundException {
+		LOGGER.debug("Application home '{}'", conf.getAppHome());
 
 		final Client httpClient =
 				new JerseyClientBuilder()
