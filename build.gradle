@@ -5,6 +5,8 @@ apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+version = version()
+
 mainClassName = 'net.snet.ledger.LedgerPlService'
 
 project.ext {
@@ -63,3 +65,11 @@ startScripts {
 }
 
 task stage(dependsOn: ['clean', 'oneJar'])
+
+def version() {
+  def version = new File('VERSION.txt').text.trim()
+  if (!project.hasProperty('release')) {
+    version +=  '+' + String.format('%tY%<tm%<td.%<tH%<tM%<tS', new Date())
+  }
+  version
+}
