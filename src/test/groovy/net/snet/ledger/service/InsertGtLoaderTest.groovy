@@ -9,7 +9,7 @@ import spock.lang.Specification
 class InsertGtLoaderTest extends Specification {
   def 'it should load batch to insert gt'() {
   given:
-    def cmd = new File('src/dist/bin/load-invoices.cmd')
+    def cmd = new File(Resources.getResource('load-invoices-dry.cmd').getFile())
     assert cmd.exists()
     def insertGtConf = new File('subiekt.xml')
     def batch = new File(Resources.getResource('invoice-test-load.yml').getFile())
