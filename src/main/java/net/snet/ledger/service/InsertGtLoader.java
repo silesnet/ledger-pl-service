@@ -1,5 +1,6 @@
 package net.snet.ledger.service;
 
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ public class InsertGtLoader implements Loader {
 	public Journal load(final File file) {
 		LOGGER.info("loading '{}' into InsERT GT...", file);
 		String[] cmd = {loadCmd.getPath(), file.getPath(), insertGtConfig.getPath()};
+		LOGGER.debug("executing '{}'", Joiner.on(" ").join(cmd));
 		int status;
 		try {
 			Process process = Runtime.getRuntime().exec(cmd);

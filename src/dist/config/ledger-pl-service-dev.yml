@@ -1,6 +1,6 @@
 appHome: ".."
 
-insertGtConfig: conf/Subiekt.xml
+insertGtConfig: config/Subiekt.xml
 accountantName: Jan Kowalski
 insertVatMap:
   0: 4
