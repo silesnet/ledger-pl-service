@@ -61,7 +61,6 @@ startScripts {
     windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME_PROP%', '-Ddw.appHome=%APP_HOME%')
     def unixScriptFile    = file getUnixScript()
     unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME_PROP', '-Ddw.appHome=$APP_HOME')
-
   }
 }
 

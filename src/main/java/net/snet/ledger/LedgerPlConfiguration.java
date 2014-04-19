@@ -3,6 +3,7 @@ package net.snet.ledger;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.client.JerseyClientConfiguration;
 import com.yammer.dropwizard.config.Configuration;
+import com.yammer.dropwizard.config.LoggingConfiguration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -132,5 +133,18 @@ public class LedgerPlConfiguration extends Configuration {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public LoggingConfiguration getLoggingConfiguration() {
+		final LoggingConfiguration configuration = super.getLoggingConfiguration();
+		final LoggingConfiguration.FileConfiguration fc = configuration.getFileConfiguration();
+		if (fc != null) {
+			fc.setCurrentLogFilename(new File(appHome, fc.getCurrentLogFilename()).getAbsolutePath());
+			if (fc.isArchive()) {
+				fc.setArchivedLogFilenamePattern(new File(appHome, fc.getArchivedLogFilenamePattern()).getAbsolutePath());
+			}
+		}
+		return configuration;
 	}
 }
