@@ -58,7 +58,6 @@ startScripts {
   optsEnvironmentVar = 'APP_HOME_PROP'
   doLast {
     def windowsScriptFile = file getWindowsScript()
-//    windowsScriptFile.text = windowsScriptFile.text.replace('set APP_HOME=%DIRNAME%..\r\n', 'set APP_HOME=%DIRNAME%..\r\ncd %APP_HOME%\r\n')
     windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME_PROP%', '-Ddw.appHome=%APP_HOME%')
     def unixScriptFile    = file getUnixScript()
     unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME_PROP', '-Ddw.appHome=$APP_HOME')
