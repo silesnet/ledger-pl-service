@@ -100,23 +100,23 @@ public class LedgerPlConfiguration extends Configuration {
 	}
 
 	public File getInvoiceBatchPrefix() {
-		return new File(appHome, invoiceBatchPrefix.toString());
+		return path(invoiceBatchPrefix);
 	}
 
 	public File getCustomerBatchPrefix() {
-		return new File(appHome, customerBatchPrefix.toString());
+		return path(customerBatchPrefix);
 	}
 
 	public File getInsertGtConfig() {
-		return new File(appHome, insertGtConfig.toString());
+		return path(insertGtConfig);
 	}
 
 	public File getLoadInvoiceCmd() {
-		return new File(appHome, loadInvoiceCmd.toString());
+		return path(loadInvoiceCmd);
 	}
 
 	public File getLoadCustomerCmd() {
-		return new File(appHome, loadCustomerCmd.toString());
+		return path(loadCustomerCmd);
 	}
 
 	public Map<Integer, Integer> getInsertVatMap() {
@@ -140,11 +140,27 @@ public class LedgerPlConfiguration extends Configuration {
 		final LoggingConfiguration configuration = super.getLoggingConfiguration();
 		final LoggingConfiguration.FileConfiguration fc = configuration.getFileConfiguration();
 		if (fc != null) {
-			fc.setCurrentLogFilename(new File(appHome, fc.getCurrentLogFilename()).getAbsolutePath());
+			fc.setCurrentLogFilename(path(fc.getCurrentLogFilename()).toString());
 			if (fc.isArchive()) {
-				fc.setArchivedLogFilenamePattern(new File(appHome, fc.getArchivedLogFilenamePattern()).getAbsolutePath());
+				fc.setArchivedLogFilenamePattern(path(fc.getArchivedLogFilenamePattern()).toString());
 			}
 		}
 		return configuration;
+	}
+
+	private File path(String path) {
+		return path(new File(path));
+	}
+
+	private File path(File file) {
+		File result = file;
+		if (!file.isAbsolute()) {
+			result = new File(appHome, file.getPath());
+		}
+		try {
+			return result.getCanonicalFile();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
