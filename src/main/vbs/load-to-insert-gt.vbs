@@ -13,7 +13,7 @@ If WScript.Arguments.Count >= 4 Then
   journalFile = WScript.Arguments.Item(3)
 Else
   echoUsage
-  WScript.Quit -1
+  WScript.Quit 0
 End If
 
 debug "# Insert GT loader"
@@ -23,7 +23,7 @@ debug "configuring YAML parser with '" & inputFile & "'..."
 Set source = yamlOf(inputFile)
 If Not source.hasNext Then
   debug "nothing to load, input file is empty!"
-  WScript.Quit 0
+  WScript.Quit -1
 End If
 
 debug "configuring InsERT GT with '" & insertGtConfig & "'..."
@@ -33,7 +33,7 @@ If WScript.Arguments.Count = 5 Then
   Else
     WScript.Echo "unknown argument '" & WScript.Arguments.Item(4) & "'"
     echoUsage
-    WScript.Quit -1
+    WScript.Quit 0
   End If
 Else
   Set insertGt = insertOf(insertGtConfig)
@@ -49,7 +49,7 @@ Select Case sinkName
     sink.setInsertGt insertGt
   Case Else
     WScript.Echo "ERROR: unsupported load type"
-    WScript.Quit -1
+    WScript.Quit 0
 End Select
 
 debug "configuring journal '" & journalFile & "'..."
@@ -61,7 +61,7 @@ loader.loadAll
 
 debug "FINISHED, loaded " & loader.loadedDocuments() & " of " & loader.allDocuments() & " " & sinkName
 
-WScript.Quit 0
+WScript.Quit -1
 
 Sub debug(msg)
   WScript.Echo msg

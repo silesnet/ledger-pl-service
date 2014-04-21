@@ -1,6 +1,7 @@
 package net.snet.ledger.service;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,17 +31,22 @@ public class InsertGtLoader implements Loader {
 		LOGGER.debug("executing '{}'", Joiner.on(" ").join(cmd));
 		int status;
 		try {
-			Process process = Runtime.getRuntime().exec(cmd);
+			final ProcessBuilder builder = new ProcessBuilder(cmd);
+			builder.redirectErrorStream(true);
+			Process process = builder.start();
 			status = process.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				LOGGER.debug(line);
+				line = line.trim();
+				if (!Strings.isNullOrEmpty(line)) {
+					LOGGER.debug(line);
+				}
 			}
 		} catch (IOException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		if (status != 0) {
+		if (status == 0) {
 			LOGGER.error("FAILED loading into InsERT GT with error code '{}'", status);
 			throw new RuntimeException("FAILED loading into InsERT GT with error code '" + status + "'");
 		}
