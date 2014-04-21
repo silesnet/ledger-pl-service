@@ -48,7 +48,7 @@ public class LoadService implements Runnable {
 
 			LOGGER.info("processing load journal...");
 			final DateTime now = new DateTime();
-			final List<Map> patches = Lists.newArrayList();
+			final List<Map> invoices = Lists.newArrayList();
 			while (journal.hasNext()) {
 				final Record record = journal.next();
 				if (record.isOk()) {
@@ -56,13 +56,17 @@ public class LoadService implements Runnable {
 					final Map<String, Object> patch = Maps.newHashMap();
 					patch.put("id", record.id());
 					patch.put("synchronized", now);
-					patches.add(patch);
+					invoices.add(patch);
 				} else {
 					LOGGER.error(record.message());
 				}
 			}
-			LOGGER.info("patching resources...");
-			restResource.patch(patches);
+			if (invoices.size() > 0) {
+				LOGGER.info("patching resources...");
+				restResource.patch(invoices);
+			} else {
+				LOGGER.info("no invoices were loaded, patching skipped");
+			}
 			LOGGER.info("FINISHED load");
 		} catch (Exception e) {
 			LOGGER.error("FAILED load", e);
