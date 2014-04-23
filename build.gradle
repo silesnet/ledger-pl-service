@@ -73,10 +73,3 @@ def version() {
   }
   version
 }
-
-
-test {
-  doFirst {
-    println testClassesDir
-  }
-}
