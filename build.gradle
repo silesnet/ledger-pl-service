@@ -67,9 +67,16 @@ startScripts {
 task stage(dependsOn: ['clean', 'oneJar'])
 
 def version() {
-  def version = new File('VERSION.txt').text.trim()
+  def version = new File("$projectDir/VERSION.txt").text.trim()
   if (!project.hasProperty('release')) {
     version +=  '+' + String.format('%tY%<tm%<td.%<tH%<tM%<tS', new Date())
   }
   version
+}
+
+
+test {
+  doFirst {
+    println testClassesDir
+  }
 }
