@@ -9,6 +9,9 @@ version = version()
 
 mainClassName = 'net.snet.ledger.LedgerPlService'
 
+// IntelliJ IDEA default gradle test folder interference fix
+test.exclude("$name/**")
+
 project.ext {
   dropwizardVersion = '0.6.2'
   serviceConfig = 'ledger-pl-service-dev.yml'
