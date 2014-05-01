@@ -16,6 +16,7 @@ class YamlBatchTest extends Specification {
 	  map.quantity = 1.4
     def yaml = new File(Resources.getResource('.').getFile(), 'testSerialize.yml')
     if (yaml.exists()) { yaml.delete() }
+    assert ! yaml.exists()
     def batch = new YamlBatch(yaml)
     assert ! batch.isReady()
   when:

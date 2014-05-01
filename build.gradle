@@ -9,6 +9,9 @@ version = version()
 
 mainClassName = 'net.snet.ledger.LedgerPlService'
 
+// IntelliJ IDEA default gradle test folder interference fix
+test.exclude("$name/**")
+
 project.ext {
   dropwizardVersion = '0.6.2'
   serviceConfig = 'ledger-pl-service-dev.yml'
@@ -67,7 +70,7 @@ startScripts {
 task stage(dependsOn: ['clean', 'oneJar'])
 
 def version() {
-  def version = new File('VERSION.txt').text.trim()
+  def version = new File("$projectDir/VERSION.txt").text.trim()
   if (!project.hasProperty('release')) {
     version +=  '+' + String.format('%tY%<tm%<td.%<tH%<tM%<tS', new Date())
   }
