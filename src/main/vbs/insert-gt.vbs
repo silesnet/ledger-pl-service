@@ -49,6 +49,7 @@ Class InsertClass
     assertIsDate data, "invoiceDate", "invoice date 'invoiceDate' is invalid or missing"
     assertIsDate data, "dueDate", "due date 'dueDate' is invalid or missing"
     assertIsDate data, "deliveryDate", "due date 'dueDate' is invalid or missing"
+    assertIsNumeric data, "totalNet", "total Net 'totalNet' is invalid or missing"
     If data.Exists("items") Then
       Dim items, itemKey, itemData
       Set items = data.Item("items")
@@ -93,6 +94,9 @@ Class InsertClass
     invoice.Przelicz
     invoice.PlatnoscKredytKwota = invoice.KwotaDoZaplaty
     invoice.PlatnoscKredytTermin = fromIsoDate(data.Item("dueDate"))
+    If invoice.WartoscNetto <> Cdbl(toNumber(data.Item("totalNet"))) Then
+      Err.Raise 1002, "addInvoice", "totalNet '" & toNumber(data.Item("totalNet")) & "' does not match invoice.WartoscNetto '"  & invoice.WartoscNetto & "'"
+    End If
     invoice.Zapisz
     invoice.Zamknij
   End Sub

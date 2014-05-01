@@ -28,7 +28,9 @@ Sub testValidateInvoice
   invoice.Add "dueDate", "2014-04-22"
   assertNotValidInvoice ins, invoice, "dueDate added"
   invoice.Add "deliveryDate", "2014-04-30"
-  assertValidInvoice ins, invoice, "deliveryDate added"
+  assertNotValidInvoice ins, invoice, "deliveryDate added"
+  invoice.Add "totalNet", "50.12"
+  assertValidInvoice ins, invoice, "totalNet added"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   assertValidInvoice ins, invoice, "empty items added"
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
@@ -90,6 +92,7 @@ Sub testAddInvoice
   invoice.Add "dueDate", "2014-04-22"
   invoice.Add "deliveryDate", "2014-04-30"
   invoice.Add "accountantName", "Jan Kowalski"
+  invoice.Add "totalNet", "73.2"
   invoice.Add "items", CreateObject("Scripting.Dictionary")
   invoice.Item("items").Add 0, CreateObject("Scripting.Dictionary")
   Dim item
@@ -103,7 +106,7 @@ Sub testAddInvoice
   invoice.Item("items").Add 1, CreateObject("Scripting.Dictionary")
   Set item = invoice.Item("items").Item(1)
   item.Add "name", "Wireless ++"
-  item.Add "unitPrice", "50.5"
+  item.Add "unitPrice", "10.5"
   item.Add "quantity", "1.2"
   item.Add "unit", "mies."
   item.Add "vatId", "100001"
