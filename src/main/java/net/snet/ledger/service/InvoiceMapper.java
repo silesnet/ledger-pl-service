@@ -20,6 +20,7 @@ public class InvoiceMapper implements Mapper {
 
 	@Override
 	public Map map(Map data) {
+		// keys would preserve insertion order, using LinkedHashMap
 		final Map<Object, Object> invoice = Maps.newLinkedHashMap();
 		invoice.put("number", invoiceNumber(data.get("number")));
 		invoice.put("originalNumber", data.get("number"));
@@ -29,7 +30,8 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
 		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
-		invoice.put("totalNet", null); // key ordering placeholder
+		// 'totalNet' key placeholder, would be rewritten, keeping things ordered
+		invoice.put("totalNet", null);
 		invoice.put("accountantName", accountantName);
 		final ArrayList<Object> items = Lists.newArrayList();
 		invoice.put("items", items);
