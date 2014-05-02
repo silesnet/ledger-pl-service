@@ -56,6 +56,22 @@ class InvoiceMapperTest extends Specification {
 			insert.items.get(0).unit == 'szt.'
 	}
 
+	def 'it should count totalNet from for all items'() {
+		given:
+			def sis = fixture()
+			sis.lines << [
+			    text: "More goods",
+					amount: 1.2,
+					price: 10,
+					is_display_unit: false
+			]
+			def mapper = new InvoiceMapper(pctToIdMap, 'AN')
+		when:
+			def insert = mapper.map(sis)
+		then:
+			insert.totalNet == 60.0
+	}
+
 	def fixture() {
 		return [
 				number: "201404451",
@@ -79,4 +95,5 @@ class InvoiceMapperTest extends Specification {
 				]
 		]
 	}
+
 }

@@ -4,13 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * Created by admin on 7.4.14.
- */
 public class InvoiceMapper implements Mapper {
 	private final Map<Integer, Integer> pctToIdMap;
 	private final String accountantName;
@@ -31,9 +29,11 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
 		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
+		invoice.put("totalNet", null); // key ordering placeholder
 		invoice.put("accountantName", accountantName);
 		final ArrayList<Object> items = Lists.newArrayList();
 		invoice.put("items", items);
+		BigDecimal totalNet = BigDecimal.ZERO;
 		for (Object lineObj : (Collection) data.get("lines")) {
 			Map line = (Map) lineObj;
 			Map<Object, Object> item = Maps.newLinkedHashMap();
@@ -44,7 +44,9 @@ public class InvoiceMapper implements Mapper {
 			item.put("vatId", pctToIdMap.get(Integer.valueOf(data.get("vat").toString())));
 			item.put("vatPct", data.get("vat"));
 			items.add(item);
+			totalNet = totalNet.add(lineNet(line));
 		}
+		invoice.put("totalNet", totalNet.doubleValue());
 		return invoice;
 	}
 
@@ -70,6 +72,14 @@ public class InvoiceMapper implements Mapper {
 
 	private String lastOfInvoicingMonth(Object date) {
 		return new DateTime(date).dayOfMonth().withMaximumValue().toString("yyyy-MM-dd");
+	}
+
+	private BigDecimal lineNet(Map line) {
+		return toBigDecimal(line, "price").multiply(toBigDecimal(line, "amount"));
+	}
+
+	private BigDecimal toBigDecimal(Map map, String key) {
+		return BigDecimal.valueOf(Double.valueOf(map.get(key).toString()));
 	}
 
 }
