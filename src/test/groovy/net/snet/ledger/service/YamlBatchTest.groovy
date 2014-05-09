@@ -39,6 +39,28 @@ quantity: 1.4
 '''
   }
 
+	def 'it should serialize long text items to yaml'() {
+		given:
+		def map = Maps.newLinkedHashMap();
+		map.name = 'Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc.'
+		def yaml = new File(Resources.getResource('.').getFile(), 'testSerializeLongText.yml')
+		if (yaml.exists()) { yaml.delete() }
+		assert ! yaml.exists()
+		def batch = new YamlBatch(yaml)
+		assert ! batch.isReady()
+		when:
+		batch.append(map)
+		assert ! batch.isReady()
+		batch.trailer(Optional.absent())
+		then:
+		batch.isReady()
+		yaml.text == '''
+name: "Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc."
+...
+'''
+	}
+
+
   def 'it should provide batch file'() {
   given:
     def yaml = new File(Resources.getResource('.').getFile(), 'testSerialize.yml')
