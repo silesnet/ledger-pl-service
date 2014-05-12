@@ -1,30 +1,39 @@
 package net.snet.ledger.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.DumperOptions;
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.common.base.Optional;
 
 import java.io.*;
 
-/**
- * Created by sikorric on 2014-04-02.
- */
 public class YamlBatch implements Batch {
+
+	public static final int YAML_LINE_WIDTH = 1024;
 
 	private final File file;
 	private boolean isReady = false;
-	private final ObjectMapper mapper;
+	private final Yaml yaml;
 	private final OutputStream os;
 
 	public YamlBatch(File file) {
 		this.file = file;
-		mapper = new ObjectMapper(new YAMLFactory());
+		yaml = new Yaml(yamlOptions());
 		try {
 			os = new BufferedOutputStream(new FileOutputStream(file));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private DumperOptions yamlOptions() {
+		final DumperOptions options = new DumperOptions();
+		options.setCanonical(false);
+		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+		options.setExplicitStart(true);
+		options.setExplicitEnd(false);
+		options.setWidth(YAML_LINE_WIDTH);
+		return options;
 	}
 
 	@Override
@@ -75,7 +84,7 @@ public class YamlBatch implements Batch {
 	}
 
 	private byte[] yamlBytes(Object obj) throws JsonProcessingException {
-		return mapper.writeValueAsBytes(obj);
+		return yaml.dump(obj).getBytes();
 	}
 
 }

@@ -30,10 +30,10 @@ class YamlBatchTest extends Specification {
     yaml.text == '''
 # comment
 ---
-number: "a123+"
+number: a123+
 quantity: 1.4
 ---
-number: "a123+"
+number: a123+
 quantity: 1.4
 ...
 '''
@@ -54,10 +54,11 @@ quantity: 1.4
 		batch.trailer(Optional.absent())
 		then:
 		batch.isReady()
-		yaml.text == '''
-name: "Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc."
+		yaml.text == '''---
+name: Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc.
 ...
 '''
+		println yaml.text
 	}
 
 
