@@ -21,12 +21,13 @@ Sub testParseEscapedChars()
   WScript.Echo "# it should parse escaped chars"
   Dim yaml
   Set yaml = yamlOf("fixtures/escaped.yml")
-  Dim doc, expected
+  Dim doc
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "name") = """NAME""", "fetch escaped string from name"
-  assert fetch(doc, "info") = "info "" # ", "fetch escaped string from info"
+  assertEqual doc, "regular", UTF8_Decode("šČąĘ")
+  assertEqual doc, "quoted", "'NAME'"
+  assertEqual doc, "quoted2", """NAME"""
+  assertEqual doc, "escaped", "\n"
 End Sub
-
 
 Sub testParseUtf8()
   WScript.Echo "# it should parse utf8 strings"
@@ -35,7 +36,7 @@ Sub testParseUtf8()
   Dim doc, expected
   Set doc = yaml.nextDocument()
   expected = UTF8_Decode("""łą'""")
-  assert fetch(doc, "name") = expected, "fetch utf8 string from name"
+  assertEqual doc, "name", UTF8_Decode("""łą'""")
 End Sub
 
 Sub testParseLedgerInvoice
@@ -44,27 +45,27 @@ Sub testParseLedgerInvoice
   Set yaml = yamlOf("fixtures/ledger-invoice.yml")
   Dim doc
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "number") = "4451", "fetch 'number' failed"
-  assert fetch(doc, "customerId") = "AB-5578", "fetch 'customerId' failed"
-  assert fetch(doc, "invoiceDate") = "2014-04-04", "fetch 'invoiceDate' failed"
-  assert fetch(doc, "dueDate") = "2014-04-18", "fetch 'dueDate' failed"
-  assert fetch(doc, "items.0.name") = "WIRELESSmax  10/2 Mbps, 04/2014", "fetch 'items.1.name' failed"
-  assert fetch(doc, "items.0.unitPrice") = 48, "fetch 'items.1.unitPrice' failed"
-  assert fetch(doc, "items.0.quantity") = 1, "fetch 'items.0.quantity' failed"
-  assert fetch(doc, "items.0.unit") = "mies.", "fetch 'items.0.unit' failed"
-  assert fetch(doc, "items.0.vatId") = 100001, "fetch 'items.0.vatId' failed"
-  assert fetch(doc, "items.0.vatPct") = 23, "fetch 'items.0.vatPct' failed"
+  assertEqual doc, "number", "4451"
+  assertEqual doc, "customerId", "AB-5578"
+  assertEqual doc, "invoiceDate", "2014-04-04"
+  assertEqual doc, "dueDate", "2014-04-18"
+  assertEqual doc, "items.0.name", "WIRELESSmax  10/2 Mbps, 04/2014"
+  assertEqual doc, "items.0.unitPrice", 48
+  assertEqual doc, "items.0.quantity", 1
+  assertEqual doc, "items.0.unit", "mies."
+  assertEqual doc, "items.0.vatId", 100001
+  assertEqual doc, "items.0.vatPct", 23
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "number") = "4452", "fetch 'number' failed"
-  assert fetch(doc, "customerId") = "PL-1628", "fetch 'customerId' failed"
-  assert fetch(doc, "invoiceDate") = "2014-04-04", "fetch 'invoiceDate' failed"
-  assert fetch(doc, "dueDate") = "2014-04-18", "fetch 'dueDate' failed"
-  assert fetch(doc, "items.0.name") = "WIRELESSmax  25/2 Mbps, 04/2014", "fetch 'items.1.name' failed"
-  assert fetch(doc, "items.0.unitPrice") = "78.5", "fetch 'items.1.unitPrice' failed"
-  assert fetch(doc, "items.0.quantity") = "1.2", "fetch 'items.0.quantity' failed"
-  assert fetch(doc, "items.0.unit") = "mies.", "fetch 'items.0.unit' failed"
-  assert fetch(doc, "items.0.vatId") = 100001, "fetch 'items.0.vatId' failed"
-  assert fetch(doc, "items.0.vatPct") = 23, "fetch 'items.0.vatPct' failed"
+  assertEqual doc, "number", "4452"
+  assertEqual doc, "customerId", "PL-1628"
+  assertEqual doc, "invoiceDate", "2014-04-04"
+  assertEqual doc, "dueDate", "2014-04-18"
+  assertEqual doc, "items.0.name", "WIRELESSmax  25/2 Mbps, 04/2014"
+  assertEqual doc, "items.0.unitPrice", "78.5"
+  assertEqual doc, "items.0.quantity", "1.2"
+  assertEqual doc, "items.0.unit", "mies."
+  assertEqual doc, "items.0.vatId", 100001
+  assertEqual doc, "items.0.vatPct", 23
 End Sub
 
 Sub testFetchCollection
@@ -88,19 +89,19 @@ Sub testParsedValues
   Set yaml = yamlOf("fixtures/yaml-fixture.yml")
   Dim doc
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "number") = "1234", "fetch 'number' failed"
-  assert fetch(doc, "customer.name") = "Cust 1", "fetch 'customer.name' failed"
-  assert fetch(doc, "lines.1.item") = "Item 1/2", "fetch 'lines.1.item' failed"
+  assertEqual doc, "number", "1234"
+  assertEqual doc, "customer.name", "Cust 1"
+  assertEqual doc, "lines.1.item", "Item 1/2"
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "number") = "1235", "fetch 'number' failed"
-  assert fetch(doc, "customer.name") = "Cust 2", "fetch 'customer.name' failed"
-  assert fetch(doc, "lines.1.item") = "", "fetch 'lines.1.item' failed"
+  assertEqual doc, "number", "1235"
+  assertEqual doc, "customer.name", "Cust 2"
+  assertEqual doc, "lines.1.item", ""
   Set doc = yaml.nextDocument()
-  assert fetch(doc, "number") = "1236", "fetch 'number' failed"
-  assert fetch(doc, "customer.name") = "Cust 3", "fetch 'customer.name' failed"
-  assert fetch(doc, "lines.0.item") = "Item 3/1", "fetch 'lines.0.item' failed"
-  assert fetch(doc, "lines.1.item") = "Item 3/2", "fetch 'lines.1.item' failed"
-  assert fetch(doc, "lines.1.price") = "0", "fetch 'lines.1.price' failed"
+  assertEqual doc, "number", "1236"
+  assertEqual doc, "customer.name", "Cust 3"
+  assertEqual doc, "lines.0.item", "Item 3/1"
+  assertEqual doc, "lines.1.item", "Item 3/2"
+  assertEqual doc, "lines.1.price", "0"
 End Sub
 
 Sub testEmptyYaml
@@ -128,10 +129,20 @@ Sub assert(cond, msg)
   End If
 End Sub
 
+Sub assertEqual(doc, field, expected)
+  Dim value, cond
+  expected = "" & expected
+  value = fetch(doc, field)
+  cond = (value = expected)
+  If Not cond Then
+    WScript.Echo "NOT EQUAL: expected '" & expected & "', got '" & value & "'"
+  End If
+  assert cond, "fetch '" & field & "'"
+End Sub
+
 Sub include(file)
   ExecuteGlobal CreateObject("Scripting.FileSystemObject").openTextFile(file & ".vbs").readAll()
 End Sub
-
 
 Public Function toUtf8(astr)
   Dim c, n

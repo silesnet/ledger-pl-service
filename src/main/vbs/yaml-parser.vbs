@@ -118,7 +118,7 @@ Class YamlParserClass
   End Sub
 
   Private Function readLine()
-    readLine = Replace(input.ReadText(adReadLine), "\", "")
+    readLine = input.ReadText(adReadLine)
   End Function
 
   Private Sub assertNotInitialized
@@ -130,8 +130,8 @@ Class YamlParserClass
   End Sub
 
   Private Function unQuote(value)
-    If Left(value, 1) = """" And Right(value, 1) = """" Then
-      unQuote = Mid(value, 2, Len(value) - 2)
+    If Left(value, 1) = "'" And Right(value, 1) = "'" Then
+      unQuote = Replace(Mid(value, 2, Len(value) - 2), "''", "'")
     Else
       unQuote = value
     End If

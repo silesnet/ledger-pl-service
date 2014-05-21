@@ -6,7 +6,7 @@ number: 1234
 dueDate: 2014-02-13
 totalAmount:
 customer:
-  name: "Cust 1"
+  name: 'Cust 1'
   address: Address 1
 lines:
 - item:
@@ -18,7 +18,7 @@ lines:
   quantity:
   price:
 ---
-number: "1235"
+number: '1235'
 dueDate:
 totalAmount:
 customer:

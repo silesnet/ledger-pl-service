@@ -1,4 +1,6 @@
 ---
-name: "\"NAME\""
-info: "info \" \# "
+regular: šČąĘ
+quoted: '''NAME'''
+quoted2: '"NAME"'
+escaped: \n
 ...

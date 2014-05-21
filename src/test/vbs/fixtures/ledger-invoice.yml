@@ -1,25 +1,25 @@
 ---
-number: "4451"
-customerId: "AB-5578"
-invoiceDate: "2014-04-04"
-dueDate: "2014-04-18"
+number: '4451'
+customerId: 'AB-5578'
+invoiceDate: '2014-04-04'
+dueDate: '2014-04-18'
 items:
-- name: "WIRELESSmax  10/2 Mbps, 04/2014"
+- name: 'WIRELESSmax  10/2 Mbps, 04/2014'
   unitPrice: 48
   quantity: 1
-  unit: "mies."
+  unit: 'mies.'
   vatId: 100001
   vatPct: 23
 ---
-number: "4452"
-customerId: "PL-1628"
-invoiceDate: "2014-04-04"
-dueDate: "2014-04-18"
+number: '4452'
+customerId: 'PL-1628'
+invoiceDate: '2014-04-04'
+dueDate: '2014-04-18'
 items:
-- name: "WIRELESSmax  25/2 Mbps, 04/2014"
+- name: 'WIRELESSmax  25/2 Mbps, 04/2014'
   unitPrice: 78.5
   quantity: 1.2
-  unit: "mies."
+  unit: 'mies.'
   vatId: 100001
   vatPct: 23
 ...
