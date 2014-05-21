@@ -29,6 +29,7 @@ class YamlDumperTest extends Specification {
     "a\rb" | '"a\\rb"'
     '' | '\'\''
     '123' | '\'123\''
+    null | 'null'
   }
 
   def 'it should dump long text value without wrapping'() {

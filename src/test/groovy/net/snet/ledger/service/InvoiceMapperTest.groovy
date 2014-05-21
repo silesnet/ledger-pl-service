@@ -72,6 +72,28 @@ class InvoiceMapperTest extends Specification {
 			insert.totalNet == 60.0
 	}
 
+  def 'it should YAML sanitize customer name'() {
+    given:
+      def sis = fixture()
+      sis.customer.name = "a\nb\rc\td"
+      def mapper = new InvoiceMapper(pctToIdMap, 'AN')
+    when:
+      def insert = mapper.map(sis)
+    then:
+      insert.customerName == 'a b c d'
+  }
+
+  def 'it should YAML sanitize item name'() {
+    given:
+      def sis = fixture()
+      sis.lines[0].text = "a\nb\rc\td"
+      def mapper = new InvoiceMapper(pctToIdMap, 'AN')
+    when:
+      def insert = mapper.map(sis)
+    then:
+      insert.items.get(0).name.startsWith('a b c d')
+  }
+
 	def fixture() {
 		return [
 				number: "201404451",

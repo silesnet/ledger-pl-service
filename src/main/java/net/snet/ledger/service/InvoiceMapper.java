@@ -26,7 +26,7 @@ public class InvoiceMapper implements Mapper {
 		invoice.put("originalNumber", data.get("number"));
 		invoice.put("customerId", ((Map) data.get("customer")).get("symbol"));
 		invoice.put("customerOriginalId", ((Map) data.get("customer")).get("id"));
-		invoice.put("customerName", ((Map) data.get("customer")).get("name"));
+		invoice.put("customerName", sanitizeForYaml(((Map) data.get("customer")).get("name")));
 		invoice.put("invoiceDate", isoDate(data.get("billing_date")));
 		invoice.put("dueDate", isoDate(data.get("purge_date")));
 		invoice.put("deliveryDate", lastOfInvoicingMonth(data.get("billing_date")));
@@ -39,7 +39,7 @@ public class InvoiceMapper implements Mapper {
 		for (Object lineObj : (Collection) data.get("lines")) {
 			Map line = (Map) lineObj;
 			Map<Object, Object> item = Maps.newLinkedHashMap();
-			item.put("name", line.get("text") + ", " + period(data.get("period_from"), data.get("period_to")));
+			item.put("name", sanitizeForYaml(line.get("text")) + ", " + period(data.get("period_from"), data.get("period_to")));
 			item.put("unitPrice", line.get("price"));
 			item.put("quantity", line.get("amount"));
 			item.put("unit", unit(line.get("is_display_unit")));
@@ -50,6 +50,16 @@ public class InvoiceMapper implements Mapper {
 		}
 		invoice.put("totalNet", totalNet.doubleValue());
 		return invoice;
+	}
+
+	private String sanitizeForYaml(Object value) {
+		if (value == null) {
+			return null;
+		}
+		return value.toString()
+									.replaceAll("\n", " ")
+									.replaceAll("\r", " ")
+									.replaceAll("\t", " ");
 	}
 
 	private String unit(Object is_display_unit) {
