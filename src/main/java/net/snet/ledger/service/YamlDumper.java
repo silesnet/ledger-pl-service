@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
  * Created by sikorric on 2014-05-21.
  */
 public class YamlDumper {
-	private static final int YAML_LINE_WIDTH = 0;
+	private static final int YAML_LINE_WIDTH = Integer.MAX_VALUE;
 	private final Yaml yaml;
 
 	public YamlDumper() {
