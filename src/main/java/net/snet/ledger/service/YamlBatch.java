@@ -1,24 +1,20 @@
 package net.snet.ledger.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.yaml.snakeyaml.DumperOptions;
-import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.common.base.Optional;
 
 import java.io.*;
 
 public class YamlBatch implements Batch {
 
-	public static final int YAML_LINE_WIDTH = 1024;
-
 	private final File file;
 	private boolean isReady = false;
-	private final Yaml yaml;
+	private final YamlDumper dumper;
 	private final OutputStream os;
 
 	public YamlBatch(File file) {
 		this.file = file;
-		yaml = new Yaml(yamlOptions());
+		dumper = new YamlDumper();
 		try {
 			os = new BufferedOutputStream(new FileOutputStream(file));
 		} catch (FileNotFoundException e) {
@@ -26,15 +22,6 @@ public class YamlBatch implements Batch {
 		}
 	}
 
-	private DumperOptions yamlOptions() {
-		final DumperOptions options = new DumperOptions();
-		options.setCanonical(false);
-		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		options.setExplicitStart(true);
-		options.setExplicitEnd(false);
-		options.setWidth(YAML_LINE_WIDTH);
-		return options;
-	}
 
 	@Override
 	public File file() {
@@ -84,7 +71,7 @@ public class YamlBatch implements Batch {
 	}
 
 	private byte[] yamlBytes(Object obj) throws JsonProcessingException {
-		return yaml.dump(obj).getBytes();
+		return dumper.dump(obj).getBytes();
 	}
 
 }
