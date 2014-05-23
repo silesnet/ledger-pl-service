@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Optional;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class YamlBatch implements Batch {
 
+	public static final Charset YAML_CHARSET = Charset.forName("UTF-8");
 	private final File file;
 	private boolean isReady = false;
 	private final YamlDumper dumper;
@@ -64,14 +66,14 @@ public class YamlBatch implements Batch {
 
 	private void appendRaw(Object obj) {
 		try {
-			os.write((obj.toString() + "\n").getBytes());
+			os.write((obj.toString() + "\n").getBytes(YAML_CHARSET));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	private byte[] yamlBytes(Object obj) throws JsonProcessingException {
-		return dumper.dump(obj).getBytes();
+		return dumper.dump(obj).getBytes(YAML_CHARSET);
 	}
 
 }

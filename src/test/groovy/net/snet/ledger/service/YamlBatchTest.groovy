@@ -9,6 +9,25 @@ import spock.lang.Specification
  * Created by sikorric on 2014-04-02.
  */
 class YamlBatchTest extends Specification {
+	def 'it should serialize to UTF-8'() {
+	given:
+		def map = Maps.newLinkedHashMap();
+		map.id = 'ABC'
+		map.text = 'ń'
+		def yaml = new File(Resources.getResource('.').getFile(), 'testUtf8.yml')
+		if (yaml.exists()) { yaml.delete() }
+		assert ! yaml.exists()
+		def batch = new YamlBatch(yaml)
+		assert ! batch.isReady()
+	when:
+		batch.append(map)
+		assert ! batch.isReady()
+		batch.trailer(Optional.absent())
+	then:
+		batch.isReady()
+		yaml.getText('UTF-8') == '---\nid: ABC\ntext: ń\n...\n'
+	}
+
   def 'it should serialize items to yaml'() {
   given:
     def map = Maps.newLinkedHashMap();
@@ -40,7 +59,7 @@ quantity: 1.4
   }
 
 	def 'it should serialize long text items to yaml'() {
-		given:
+	given:
 		def map = Maps.newLinkedHashMap();
 		map.name = 'Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc.'
 		def yaml = new File(Resources.getResource('.').getFile(), 'testSerializeLongText.yml')
@@ -48,11 +67,11 @@ quantity: 1.4
 		assert ! yaml.exists()
 		def batch = new YamlBatch(yaml)
 		assert ! batch.isReady()
-		when:
+	when:
 		batch.append(map)
 		assert ! batch.isReady()
 		batch.trailer(Optional.absent())
-		then:
+	then:
 		batch.isReady()
 		yaml.text == '''---
 name: Indywidualna Praktyka Lek. Wylacznie w Przedsiebiorstwie Podmiotu Leczniczego etc.
