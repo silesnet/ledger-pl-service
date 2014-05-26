@@ -17,6 +17,9 @@ customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
 customerBatchPrefix: work/customer-pl-load-
 loadCustomerCmd: bin/load-customers.cmd
 
+httpClient:
+  timeout: 60s
+
 logging:
   level: INFO
   loggers:
