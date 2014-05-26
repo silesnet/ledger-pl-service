@@ -12,3 +12,4 @@
 
 ## InsERT/Subiekt error codes
 '-2147467259' customer with given customerId/Symbol does not exist
+'-2147217527' invoice with this number already exists
