@@ -10,9 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Created by admin on 2.4.14.
- */
 public class InsertGtLoader implements Loader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InsertGtLoader.class);
 
@@ -43,7 +40,9 @@ public class InsertGtLoader implements Loader {
 					LOGGER.debug(line);
 				}
 			}
-		} catch (IOException | InterruptedException e) {
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		if (status == 0) {
