@@ -7,10 +7,12 @@
 * fix bin/*.cmd folder issues
 
 ## TODO
+* ?
 
 ## InsERT/Subiekt error codes
-'-2147467259' customer with given customerId/Symbol does not exist
-'-2147217527' invoice with this number already exists
+**-2147467259** customer with given customerId/Symbol does not exist
+
+**-2147217527** invoice with this number already exists
 
 ## YAML serialization restrictions
 * UTF-8 encoding has to be used
