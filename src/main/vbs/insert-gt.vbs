@@ -6,6 +6,11 @@ Const gtaUruchomDopasuj = 0
 Const gtaUruchom = 0
 Const gtaUruchomNieZablokowany = 1
 Const gtaUruchomWTle = 4
+Const gtaKontrahentTypOdbiorca = 2
+Const gtaPanstwoPL = 1
+Const gtaPanstwoCZ = 2
+Const gtaPanstwoSK = 3
+Const gtaMaxName = 51
 
 Function insertOf(config)
   Dim insert
@@ -27,7 +32,8 @@ Class InsertClass
   Private Sub Class_Terminate
     debug "destroying InsERT GT"
     If isInitialized Then
-      instance.Zakoncz
+      ' DEBUG   
+      ' instance.Zakoncz
     End If
   End Sub
 
@@ -102,11 +108,133 @@ Class InsertClass
   End Sub
 
   Public Function validateCustomer(data)
+    assertHasLength data, "surrogateId", "'surrogateId' is missing"
+    assertIsBoolean data, "isNew", "'isNew' is missing"
+    assertIsBoolean data, "isBusiness", "'isBusiness' is missing"
+    assertHasLength data, "name", "'name' is missing"
+    If Len(data.Item("name")) > gtaMaxName Then Err.Raise 1001, "validate", "name is over " & gtaMaxName & " characters"
+    assertHasLength data, "fullName", "'fullName' is missing"
+    If Not data.Exists("address") Then Err.Raise 1001, "validate", "'address' is missing"
+    Dim address
+    Set address = data.Item("address")
+    assertHasLength address, "street", "'address.street' is missing"
+    assertHasLength address, "city", "'address.city' is missing"
+    assertHasLength address, "postalCode", "'address.postalCode' is missing"
+    assertHasLength data, "email", "'email' is missing"
+    assertHasLength data, "publicId", "'publicId' is missing"
+    validateCustomer = data.Item("surrogateId")
   End Function
 
   Public Sub addCustomer(data)
     assertInitialized
+    Dim customer, address, phone, account
+    assert (Not instance.Kontrahenci.Istnieje(data.Item("surrogateId"))), _
+      "customer with surrogateId '" & data.Item("surrogateId") & "' already exists"
+    Set customer = instance.Kontrahenci.Dodaj()
+    customer.Typ = gtaKontrahentTypOdbiorca
+    customer.Symbol = data.Item("surrogateId")
+    Set address = data.Item("address")
+    customer.Ulica = address.Item("street")
+    customer.NrDomu = address.Item("streetNumber")
+    customer.NrLokalu = address.Item("premiseNumber")
+    customer.Miejscowosc = address.Item("city")
+    customer.KodPocztowy = address.Item("postalCode")
+    customer.Panstwo = gtaPanstwoPL
+    customer.Email = data.Item("email")
+    If data.Exists("phone") Then
+      Set phone = customer.Telefony.Dodaj("")
+      phone.Numer = data.Item("phone")
+    End If
+    If data.Exists("bankAccount") Then
+      Set account = customer.Rachunki.Dodaj("")
+      account.Bank = "bank"
+      account.Numer = data.Item("bankAccount")
+    End If
+    If CBool(data.Item("isBusiness")) Then
+      customer.Osoba = False
+      customer.Nazwa = data.Item("name")
+      customer.NazwaPelna = data.Item("fullName")
+      customer.REGON = data.Item("publicId")
+      customer.NIP = data.Item("vatId")
+    Else
+      customer.Osoba = True
+      customer.OsobaImie = name(data.Item("name"))
+      customer.OsobaNazwisko = surName(data.Item("name"))
+      customer.NazwaPelna = data.Item("fullName")
+      customer.WlascicielPesel = data.Item("publicId")
+    End If
+    customer.Zapisz
+    customer.Zamknij
   End Sub
+
+  Public Sub updateCustomer(data)
+    assertInitialized
+    Dim customer, address, phone, account, i, wasResidential
+    assert (instance.Kontrahenci.Istnieje(data.Item("surrogateId"))), _
+      "customer with surrogateId '" & data.Item("surrogateId") & "' does not exists"
+    Set customer = instance.Kontrahenci.Wczytaj(data.Item("surrogateId"))
+    Set address = data.Item("address")
+    customer.Ulica = address.Item("street")
+    customer.NrDomu = address.Item("streetNumber")
+    customer.NrLokalu = address.Item("premiseNumber")
+    customer.Miejscowosc = address.Item("city")
+    customer.KodPocztowy = address.Item("postalCode")
+    customer.Panstwo = gtaPanstwoPL
+    customer.Email = data.Item("email")
+    If data.Exists("phone") Then
+      For i = 1 To customer.Telefony.Liczba
+        Set phone = customer.Telefony.Element(i)
+        If phone.Nazwa = "" Then
+          phone.Numer = data.Item("phone")
+        End If
+      Next
+    End If
+    If data.Exists("bankAccount") Then
+      For i = 1 To customer.Rachunki.Liczba
+        Set account = customer.Rachunki.Element(i)
+        If account.Bank = "bank" Then
+          account.Numer = data.Item("bankAccount")
+        End If
+      Next
+    End If
+    wasResidential = customer.Osoba
+    If CBool(data.Item("isBusiness")) Then
+      If Not wasResidential Then
+        debug "switching from residential to business"
+      End If
+      customer.Osoba = False
+      customer.Nazwa = data.Item("name")
+      customer.NazwaPelna = data.Item("fullName")
+      customer.REGON = data.Item("publicId")
+      customer.NIP = data.Item("vatId")
+      customer.WlascicielPesel = ""
+      customer.OsobaImie = ""
+      customer.OsobaNazwisko = ""
+    Else
+      If Not wasResidential Then
+        debug "switching from business to esidential"
+        Err.Raise 1001, "updateCustomer", "cannot switch business customer to residential"
+      End If
+      customer.Osoba = True
+      customer.OsobaImie = name(data.Item("name"))
+      customer.OsobaNazwisko = surName(data.Item("name"))
+      customer.NazwaPelna = data.Item("fullName")
+      customer.WlascicielPesel = data.Item("publicId")
+      customer.Nazwa = ""
+      customer.NIP = ""
+      customer.REGON = ""
+    End If
+    customer.Zapisz
+    customer.Zamknij
+  End Sub
+
+  Private Function surName(fullName)
+    surName = Left(fullName, InStr(fullName, " ") - 1)
+  End Function
+
+  Private Function name(fullName)
+    name = Mid(fullName, InStr(fullName, " ") + 1)
+  End Function
 
   Private Sub assertHasLength(data, field, msg)
     If Not hasLength(data, field) Then Err.Raise 1001, "validate", msg
@@ -123,6 +251,20 @@ Class InsertClass
   Private Sub assertIsDate(data, field, msg)
     If Not isDateValue(data, field) Then Err.Raise 1001, "validate", msg
   End Sub
+
+  Private Sub assertIsBoolean(data, field, msg)
+    If Not isBoolean(data, field) Then Err.Raise 1001, "validate", msg
+  End Sub
+
+  Private Function isBoolean(data, field)
+    Dim value
+    isBoolean = False
+    If data.Exists(field) Then
+      value = CBool(data.Item(field))
+      On Error Goto 0
+      isBoolean = True
+    End If
+  End Function
 
   Private Function isNumericValue(data, field)
     isNumericValue = False
@@ -214,7 +356,7 @@ Class InvoiceSinkClass
     validate = insertGt.validateInvoice(doc)
   End Function
 
-  Public Sub add(doc)
+  Public Sub update(doc)
     insertGt.addInvoice(doc)
   End Sub
 End Class
@@ -230,7 +372,11 @@ Class CustomerSinkClass
     validate = insertGt.validateCustomer(doc)
   End Function
 
-  Public Sub add(doc)
-    insertGt.addCustomer(doc)
+  Public Sub update(doc)
+    If CBool(doc.Item("isNew")) Then
+      insertGt.addCustomer(doc)
+    Else
+      insertGt.updateCustomer(doc)
+    End If      
   End Sub
 End Class

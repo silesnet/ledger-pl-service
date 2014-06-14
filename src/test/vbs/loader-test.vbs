@@ -69,7 +69,7 @@ Class SinkClass
     validate = count
   End Function
 
-  Public Sub add(doc)
+  Public Sub update(doc)
     count = count + 1
   End Sub
 End Class

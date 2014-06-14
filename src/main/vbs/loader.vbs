@@ -50,7 +50,7 @@ Class LoaderClass
       documents = documents + 1
       docId = sink.validate(doc)
       If noError("validating document", docId) Then
-        sink.add(doc)
+        sink.update(doc)
         If noError("loading document", docId) Then
           storeRecord docId, "OK"
           noFatalError "storing journal record"

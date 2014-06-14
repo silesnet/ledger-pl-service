@@ -4,7 +4,7 @@
 <sql_server>(LOCAL)\InsERTGT</sql_server>
 <auth_mode>MIXED</auth_mode>
 <sql_login encrypted='0'>sa</sql_login>
-<database>Silesnet5</database>
+<database>Silesnet8</database>
 <login encrypted='0'>Szef\haslo</login>
 	</startup>
 </cfg>
