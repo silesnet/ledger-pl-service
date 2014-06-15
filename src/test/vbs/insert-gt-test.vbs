@@ -7,16 +7,16 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
-  testUpdateBusinessToResidentialCustomer
-  testUpdateResidentialToBusinessCustomer
+  ' testUpdateBusinessToResidentialCustomer
+  ' testUpdateResidentialToBusinessCustomer
   testValidateCustomer
-  testBoolean
-  testUpdateBusinessCustomer
-  testUpdateResidentialCustomer
-  testAddBusinessCustomer
-  testAddResidentialCustomer
-  testInsertStart
-  testAddInvoice
+  ' testBoolean
+  ' testUpdateBusinessCustomer
+  ' testUpdateResidentialCustomer
+  ' testAddBusinessCustomer
+  ' testAddResidentialCustomer
+  ' testInsertStart
+  ' testAddInvoice
   testValidateInvoice
   WScript.Echo "PASSED"
 End Sub
@@ -82,8 +82,8 @@ Sub testUpdateBusinessCustomer
   customer.Add "address", address
   customer.Add "email", "updated@city.pl"
   customer.Add "phone", "99999999"
-  customer.Add "publicId", "9" & unixNow()
-  customer.Add "vatId", "9" & unixNow()
+  customer.Add "publicId", "9" & uniqueId()
+  customer.Add "vatId", "9" & uniqueId()
   customer.Add "bankAccount", "999999999999920252692626"
   Set ins = insertOf("Subiekt.xml")
   ins.updateCustomer(customer)
@@ -107,7 +107,7 @@ Sub testUpdateResidentialCustomer
   customer.Add "address", address
   customer.Add "email", "updated@city.pl"
   customer.Add "phone", "99999999"
-  customer.Add "publicId", "9" & unixNow()
+  customer.Add "publicId", "9" & uniqueId()
   customer.Add "bankAccount", "999999999999920252692626"
   Set ins = insertOf("Subiekt.xml")
   ins.updateCustomer(customer)
@@ -125,7 +125,7 @@ Sub testUpdateResidentialToBusinessCustomer
   customer.Add "address", sampleAddress()
   customer.Add "email", "some@city.pl"
   customer.Add "phone", "123456789"
-  stamp = unixNow()
+  stamp = uniqueId()
   customer.Add "publicId", "" & stamp
   customer.Add "vatId", "" & stamp
   customer.Add "bankAccount", "06114020040000320252692626"
@@ -145,7 +145,7 @@ Sub testUpdateBusinessToResidentialCustomer
   customer.Add "address", sampleAddress()
   customer.Add "email", "some@city.pl"
   customer.Add "phone", "123456789"
-  stamp = unixNow()
+  stamp = uniqueId()
   customer.Add "publicId", "" & stamp
   customer.Add "bankAccount", "06114020040000320252692626"
   Set ins = insertOf("Subiekt.xml")
@@ -161,7 +161,7 @@ Function testAddBusinessCustomer
   WScript.Echo "# it should add new business customer"
   Dim ins, customer, surrogateId, stamp
   Set customer = CreateObject("Scripting.Dictionary")
-  stamp = unixNow()
+  stamp = uniqueId()
   surrogateId = "PL-" & stamp
   customer.Add "surrogateId", surrogateId
   customer.Add "isBusiness", true
@@ -183,7 +183,7 @@ Function testAddResidentialCustomer
   Dim ins, customer, surrogateId, stamp
   Set ins = insertOf("Subiekt.xml")
   Set customer = CreateObject("Scripting.Dictionary")
-  stamp = unixNow()
+  stamp = uniqueId()
   surrogateId = "PL-" & stamp
   customer.Add "surrogateId", surrogateId
   customer.Add "isBusiness", false
@@ -192,7 +192,7 @@ Function testAddResidentialCustomer
   customer.Add "address", sampleAddress()
   customer.Add "email", "some@city.pl"
   customer.Add "phone", "123456789"
-  customer.Add "publicId", "" & unixNow()
+  customer.Add "publicId", "" & uniqueId()
   customer.Add "bankAccount", "06114020040000320252692626"
   ins.addCustomer(customer)
   testAddResidentialCustomer = surrogateId
@@ -337,8 +337,9 @@ Sub testInsertStart
   assert IsObject(ins), "start InsERT GT"
 End Sub
 
-Function unixNow()
-  unixNow = DateDiff("s", "01/01/1970 00:00:00", Now())
+Function uniqueId()
+  ' uniqueId() = DateDiff("s", "01/01/1970 00:00:00", Now())
+  uniqueId = Replace("" & Timer(), ",", "")
 End Function
 
 Sub assert(cond, msg)
