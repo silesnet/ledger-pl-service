@@ -7,17 +7,17 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
-  ' testUpdateBusinessToResidentialCustomer
-  ' testUpdateResidentialToBusinessCustomer
-  testValidateCustomer
   ' testBoolean
-  ' testUpdateBusinessCustomer
-  ' testUpdateResidentialCustomer
-  ' testAddBusinessCustomer
-  ' testAddResidentialCustomer
-  ' testInsertStart
+  ' testValidateInvoice
   ' testAddInvoice
-  testValidateInvoice
+  ' testValidateCustomer
+  ' testAddResidentialCustomer
+  ' testAddBusinessCustomer
+  ' testUpdateResidentialCustomer
+  ' testUpdateBusinessCustomer
+  ' testUpdateResidentialToBusinessCustomer
+  ' testUpdateBusinessToResidentialCustomer
+  ' testInsertStart
   WScript.Echo "PASSED"
 End Sub
 
@@ -65,90 +65,69 @@ Sub testValidateCustomer
 End Sub
 
 Sub testUpdateBusinessCustomer
-  Dim ins, customer, surrogateId, address
-  surrogateId = testAddBusinessCustomer()
+  Dim ins, original, customer, surrogateId, address
+  Set original = sampleBusinessCustomer()
+  surrogateId = original.Item("surrogateId")
+  Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
   WScript.Echo "# it should update business customer '" & surrogateId & "'"
   Set customer = CreateObject("Scripting.Dictionary")
   customer.Add "surrogateId", surrogateId
   customer.Add "isBusiness", true
   customer.Add "name", "Updated Name"
   customer.Add "fullName", "Updated Full Name"
-  Set address = sampleAddress()
-  address.Item("street") = "Updated Street"
-  address.Item("streetNumber") = 99
-  address.Item("premiseNumber") = 9
-  address.Item("city") = "Updated City"
-  address.Item("postalCode") = 99999
-  customer.Add "address", address
+  customer.Add "address", updatedSampleAddress()
   customer.Add "email", "updated@city.pl"
   customer.Add "phone", "99999999"
-  customer.Add "publicId", "9" & uniqueId()
-  customer.Add "vatId", "9" & uniqueId()
+  customer.Add "publicId", "9" & original.Item("publicId")
+  customer.Add "vatId", "9" & original.Item("vatId")
   customer.Add "bankAccount", "999999999999920252692626"
-  Set ins = insertOf("Subiekt.xml")
   ins.updateCustomer(customer)
 End Sub
 
 Sub testUpdateResidentialCustomer
-  Dim ins, customer, surrogateId, address
-  surrogateId = testAddResidentialCustomer()
+  Dim ins, original, customer, surrogateId, address
+  Set original = sampleResidentialCustomer()
+  surrogateId = original.Item("surrogateId")
+  Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
   WScript.Echo "# it should update residential customer '" & surrogateId & "'"
   Set customer = CreateObject("Scripting.Dictionary")
   customer.Add "surrogateId", surrogateId
   customer.Add "isBusiness", false
   customer.Add "name", "Updated Name"
   customer.Add "fullName", "Updated Full Name"
-  Set address = sampleAddress()
-  address.Item("street") = "Updated Street"
-  address.Item("streetNumber") = 99
-  address.Item("premiseNumber") = 9
-  address.Item("city") = "Updated City"
-  address.Item("postalCode") = 99999
-  customer.Add "address", address
+  customer.Add "address", updatedSampleAddress()
   customer.Add "email", "updated@city.pl"
   customer.Add "phone", "99999999"
   customer.Add "publicId", "9" & uniqueId()
   customer.Add "bankAccount", "999999999999920252692626"
-  Set ins = insertOf("Subiekt.xml")
   ins.updateCustomer(customer)
 End Sub
 
 Sub testUpdateResidentialToBusinessCustomer
-  Dim ins, customer, surrogateId, stamp
-  surrogateId = testAddResidentialCustomer()
-  WScript.Echo "# it should update residential to business customer '" & surrogateId & "'"
-  Set customer = CreateObject("Scripting.Dictionary")
-  customer.Add "surrogateId", surrogateId
-  customer.Add "isBusiness", true
-  customer.Add "name", "Updated Business Customer"
-  customer.Add "fullName", "Updated Business Full Name"
-  customer.Add "address", sampleAddress()
-  customer.Add "email", "some@city.pl"
-  customer.Add "phone", "123456789"
-  stamp = uniqueId()
-  customer.Add "publicId", "" & stamp
-  customer.Add "vatId", "" & stamp
-  customer.Add "bankAccount", "06114020040000320252692626"
+  Dim ins, original, customer, surrogateId, stamp
+  Set original = sampleResidentialCustomer()
+  surrogateId = original.Item("surrogateId")
   Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
+  WScript.Echo "# it should update customer '" & surrogateId & "' from residential to business"
+  Set customer = sampleBusinessCustomer()
+  customer.Item("surrogateId") = surrogateId
+  customer.Item("name") = "Updated Business"
   ins.updateCustomer(customer)
 End Sub
 
 Sub testUpdateBusinessToResidentialCustomer
-  Dim ins, customer, surrogateId, stamp, expected
-  surrogateId = testAddBusinessCustomer()
-  WScript.Echo "# it should update business to residential customer '" & surrogateId & "'"
-  Set customer = CreateObject("Scripting.Dictionary")
-  customer.Add "surrogateId", surrogateId
-  customer.Add "isBusiness", false
-  customer.Add "name", "Updated Residential"
-  customer.Add "fullName", "Updated Residential Full Name"
-  customer.Add "address", sampleAddress()
-  customer.Add "email", "some@city.pl"
-  customer.Add "phone", "123456789"
-  stamp = uniqueId()
-  customer.Add "publicId", "" & stamp
-  customer.Add "bankAccount", "06114020040000320252692626"
+  Dim ins, original, customer, surrogateId, stamp, expected
+  Set original = sampleBusinessCustomer()
+  surrogateId = original.Item("surrogateId")
   Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
+  WScript.Echo "# it should fail updating customer '" & surrogateId & "' from business to residential"
+  Set customer = sampleResidentialCustomer()
+  customer.Item("surrogateId") = surrogateId
+  customer.Item("name") = "Updated Residential"
   On Error Resume Next
   ins.updateCustomer(customer)
   expected = Err.Number
@@ -156,23 +135,11 @@ Sub testUpdateBusinessToResidentialCustomer
   If expected <> 1001 Then Err.Raise 99999, "test", "expected exception but was none"
 End Sub
 
-
 Function testAddBusinessCustomer
   WScript.Echo "# it should add new business customer"
-  Dim ins, customer, surrogateId, stamp
-  Set customer = CreateObject("Scripting.Dictionary")
-  stamp = uniqueId()
-  surrogateId = "PL-" & stamp
-  customer.Add "surrogateId", surrogateId
-  customer.Add "isBusiness", true
-  customer.Add "name", "Name up to 51 characters..........................X"
-  customer.Add "fullName", "Name over 51 characters..........................XXXXXXXXXXX"
-  customer.Add "address", sampleAddress()
-  customer.Add "email", "some@city.pl"
-  customer.Add "phone", "123456789"
-  customer.Add "publicId", "" & stamp
-  customer.Add "vatId", "" & stamp
-  customer.Add "bankAccount", "06114020040000320252692626"
+  Dim ins, customer, surrogateId
+  Set customer = sampleBusinessCustomer()
+  surrogateId = customer.Item("surrogateId")
   Set ins = insertOf("Subiekt.xml")
   ins.addCustomer(customer)
   testAddBusinessCustomer = surrogateId
@@ -180,20 +147,10 @@ End Function
 
 Function testAddResidentialCustomer
   WScript.Echo "# it should add new residential customer"
-  Dim ins, customer, surrogateId, stamp
+  Dim ins, customer, surrogateId
+  Set customer = sampleResidentialCustomer()
+  surrogateId = customer.Item("surrogateId")
   Set ins = insertOf("Subiekt.xml")
-  Set customer = CreateObject("Scripting.Dictionary")
-  stamp = uniqueId()
-  surrogateId = "PL-" & stamp
-  customer.Add "surrogateId", surrogateId
-  customer.Add "isBusiness", false
-  customer.Add "name", "Nowak Jan"
-  customer.Add "fullName", "Name over 51 characters..........................XXXXXXXXXXX"
-  customer.Add "address", sampleAddress()
-  customer.Add "email", "some@city.pl"
-  customer.Add "phone", "123456789"
-  customer.Add "publicId", "" & uniqueId()
-  customer.Add "bankAccount", "06114020040000320252692626"
   ins.addCustomer(customer)
   testAddResidentialCustomer = surrogateId
 End Function
@@ -246,6 +203,34 @@ Sub testValidateInvoice
   assertNotValidInvoice ins, invoice, "second item empty"
 End Sub
 
+Private Function sampleBusinessCustomer()
+  Dim customer
+  Set customer = sampleResidentialCustomer()
+  customer.Item("isBusiness") = true
+  customer.Item("name") = "Company Name"
+  customer.Item("fullName") = "Full Company Name"
+  customer.Add "vatId", "9" & customer.Item("publicId")
+  Set sampleBusinessCustomer = customer
+End Function
+
+Private Function sampleResidentialCustomer()
+  Dim customer, surrogateId, stamp
+  Set customer = CreateObject("Scripting.Dictionary")
+  stamp = uniqueId()
+  surrogateId = "PL-" & stamp
+  customer.Add "id", stamp
+  customer.Add "surrogateId", surrogateId
+  customer.Add "isBusiness", false
+  customer.Add "name", "Customer Name"
+  customer.Add "fullName", "Customer Full Name"
+  customer.Add "address", sampleAddress()
+  customer.Add "email", "customer@city.pl"
+  customer.Add "phone", "123456789"
+  customer.Add "publicId", "" & stamp
+  customer.Add "bankAccount", "06114020040000320252692626"
+  Set sampleResidentialCustomer = customer
+End Function
+
 Private Function sampleAddress()
   Dim address
   Set address = CreateObject("Scripting.Dictionary")
@@ -256,6 +241,18 @@ Private Function sampleAddress()
   address.Add "postalCode", "12345"
   Set sampleAddress = address
 End Function
+
+Private Function updatedSampleAddress()
+  Dim address
+  Set address = sampleAddress()
+  address.Item("street") = "Updated Street"
+  address.Item("streetNumber") = 99
+  address.Item("premiseNumber") = 9
+  address.Item("city") = "Updated City"
+  address.Item("postalCode") = 99999
+  Set updatedSampleAddress = address
+End Function
+
 
 Private Sub assertValidInvoice(ins, inv, msg)
   Dim error
