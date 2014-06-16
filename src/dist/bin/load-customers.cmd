@@ -1,2 +1,2 @@
 @echo off
-rem cscript.exe /Nologo lib\load-to-insert-gt.vbs "%1" "%2" customers "%1.jrn" --dry
+cscript.exe /Nologo %~dp0..\lib\load-to-insert-gt.vbs "%1" "%2" customers "%1.jrn"

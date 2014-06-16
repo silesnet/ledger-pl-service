@@ -10,9 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by admin on 1.4.14.
- */
 public class LoadService implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoadService.class);
 
@@ -47,7 +44,7 @@ public class LoadService implements Runnable {
 			final Journal journal = loader.load(batch.file());
 
 			LOGGER.info("processing load journal...");
-			final DateTime now = new DateTime();
+			final String now = new DateTime().toString();
 			final List<Map> invoices = Lists.newArrayList();
 			while (journal.hasNext()) {
 				final Record record = journal.next();

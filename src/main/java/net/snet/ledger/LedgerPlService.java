@@ -11,7 +11,6 @@ import net.snet.ledger.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -48,16 +47,16 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 					.withLoadCommand(conf.getLoadInvoiceCmd())
 					.build();
 		final LoadService loadInvoices = loadServiceFactory.newLoadService(loadInvoicesConfig);
-		executorService.scheduleWithFixedDelay(loadInvoices, 0, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
+		executorService.scheduleWithFixedDelay(loadInvoices, 1000, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
 
-//		final LoadServiceConfig loadCustomersConfig = new LoadServiceConfig.Builder()
-//				.withPollUrl(conf.getCustomerPollUrl())
-//				.withMapper(new CustomerMapper())
-//				.withBatchFactory(new YamlBatchFactory(conf.getCustomerBatchPrefix()))
-//				.withLoadCommand(conf.getLoadCustomerCmd())
-//				.build();
-//		final LoadService loadCustomers = loadServiceFactory.newLoadService(loadCustomersConfig);
-//		executorService.scheduleWithFixedDelay(loadCustomers, 0, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
+		final LoadServiceConfig loadCustomersConfig = new LoadServiceConfig.Builder()
+				.withPollUrl(conf.getCustomerPollUrl())
+				.withMapper(new CustomerMapper())
+				.withBatchFactory(new YamlBatchFactory(conf.getCustomerBatchPrefix()))
+				.withLoadCommand(conf.getLoadCustomerCmd())
+				.build();
+		final LoadService loadCustomers = loadServiceFactory.newLoadService(loadCustomersConfig);
+		executorService.scheduleWithFixedDelay(loadCustomers, 500, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
 			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);

@@ -32,8 +32,7 @@ Class InsertClass
   Private Sub Class_Terminate
     debug "destroying InsERT GT"
     If isInitialized Then
-      ' DEBUG   
-      ' instance.Zakoncz
+      instance.Zakoncz
     End If
   End Sub
 
@@ -122,7 +121,7 @@ Class InsertClass
     assertHasLength address, "postalCode", "'address.postalCode' is missing"
     assertHasLength data, "email", "'email' is missing"
     assertHasLength data, "publicId", "'publicId' is missing"
-    validateCustomer = data.Item("surrogateId")
+    validateCustomer = data.Item("id")
   End Function
 
   Public Sub addCustomer(data)
