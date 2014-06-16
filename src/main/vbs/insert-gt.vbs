@@ -168,7 +168,7 @@ Class InsertClass
 
   Public Sub updateCustomer(data)
     assertInitialized
-    Dim customer, address, phone, account, i, wasResidential
+    Dim customer, address, phone, account, i, wasResidential, updated
     assert (instance.Kontrahenci.Istnieje(data.Item("surrogateId"))), _
       "customer with surrogateId '" & data.Item("surrogateId") & "' does not exists"
     Set customer = instance.Kontrahenci.Wczytaj(data.Item("surrogateId"))
@@ -181,18 +181,46 @@ Class InsertClass
     customer.Panstwo = gtaPanstwoPL
     customer.Email = data.Item("email")
     If data.Exists("phone") Then
+      updated = False
       For i = 1 To customer.Telefony.Liczba
         Set phone = customer.Telefony.Element(i)
         If phone.Nazwa = "" Then
           phone.Numer = data.Item("phone")
+          updated = True
+        End If
+      Next
+      If Not updated Then
+        Set phone = customer.Telefony.Dodaj("")
+        phone.Numer = data.Item("phone")
+      End If
+    Else
+      For i = 1 To customer.Telefony.Liczba
+        Set phone = customer.Telefony.Element(i)
+        If phone.Nazwa = "" Then
+          phone.Usun
         End If
       Next
     End If
     If data.Exists("bankAccount") Then
+      updated = False
       For i = 1 To customer.Rachunki.Liczba
         Set account = customer.Rachunki.Element(i)
         If account.Bank = "bank" Then
           account.Numer = data.Item("bankAccount")
+          updated = True
+        End If
+      Next
+      If Not updated Then
+        Set account = customer.Rachunki.Dodaj("")
+        account.Bank = "bank"
+        account.Numer = data.Item("bankAccount")
+      End If
+    Else
+      For i = 1 To customer.Rachunki.Liczba
+        Set account = customer.Rachunki.Element(i)
+        If account.Bank = "bank" Then
+          ' cannot remove 'Usun' as InsERT throws unknow integrity error
+          account.Numer = ""
         End If
       Next
     End If

@@ -7,16 +7,18 @@ testAll
 
 Sub testAll
   WScript.Echo "TEST InsERT GT..."
-  ' testBoolean
-  ' testValidateInvoice
+  testBoolean
+  testValidateInvoice
   ' testAddInvoice
-  ' testValidateCustomer
+  testValidateCustomer
   ' testAddResidentialCustomer
   ' testAddBusinessCustomer
   ' testUpdateResidentialCustomer
   ' testUpdateBusinessCustomer
   ' testUpdateResidentialToBusinessCustomer
   ' testUpdateBusinessToResidentialCustomer
+  ' testUpdateCustomerAddCollectionFields
+  ' testUpdateCustomerRemoveCollectionFields
   ' testInsertStart
   WScript.Echo "PASSED"
 End Sub
@@ -27,6 +29,34 @@ Sub testBoolean
   value = "true"
   bool = CBool(value)
   ' WScript.Echo "'" & value & "' -> " & bool
+End Sub
+
+Sub testUpdateCustomerAddCollectionFields
+  Dim ins, original, customer, surrogateId
+  Set original = sampleResidentialCustomer()
+  surrogateId = original.Item("surrogateId")
+  original.Remove("phone")
+  original.Remove("bankAccount")
+  Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
+  WScript.Echo "# it should update-add customer '" & surrogateId & "' collection fields"
+  Set customer = sampleResidentialCustomer()
+  customer.Item("surrogateId") = surrogateId
+  ins.updateCustomer(customer)
+End Sub
+
+Sub testUpdateCustomerRemoveCollectionFields
+  Dim ins, original, customer, surrogateId
+  Set original = sampleResidentialCustomer()
+  surrogateId = original.Item("surrogateId")
+  Set ins = insertOf("Subiekt.xml")
+  ins.addCustomer(original)
+  WScript.Echo "# it should update-remove customer '" & surrogateId & "' collection fields"
+  Set customer = sampleResidentialCustomer()
+  customer.Remove("phone")
+  customer.Remove("bankAccount")
+  customer.Item("surrogateId") = surrogateId
+  ins.updateCustomer(customer)
 End Sub
 
 Sub testValidateCustomer
