@@ -31,38 +31,41 @@ public class LoadService implements Runnable {
 			LOGGER.info("load STARTED...");
 			LOGGER.info("polling...");
 			final List items = restResource.poll();
-
-			LOGGER.info("creating batch...");
-			final Batch batch = batchFactory.newBatch();
-			for (Object item : items) {
-				batch.append(mapper.map((Map) item));
-			}
-			batch.trailer(Optional.absent());
-
-			LOGGER.info("loading batch...");
-			final Loader loader = loaderFactory.newLoader();
-			final Journal journal = loader.load(batch.file());
-
-			LOGGER.info("processing load journal...");
-			final String now = new DateTime().toString();
-			final List<Map> invoices = Lists.newArrayList();
-			while (journal.hasNext()) {
-				final Record record = journal.next();
-				if (record.isOk()) {
-					LOGGER.info("loaded '{}'", record.id());
-					final Map<String, Object> patch = Maps.newHashMap();
-					patch.put("id", record.id());
-					patch.put("synchronized", now);
-					invoices.add(patch);
-				} else {
-					LOGGER.error(record.message());
+			if (items.size() > 0) {
+				LOGGER.info("creating batch...");
+				final Batch batch = batchFactory.newBatch();
+				for (Object item : items) {
+					batch.append(mapper.map((Map) item));
 				}
-			}
-			if (invoices.size() > 0) {
-				LOGGER.info("patching resources...");
-				restResource.patch(invoices);
+				batch.trailer(Optional.absent());
+
+				LOGGER.info("loading batch...");
+				final Loader loader = loaderFactory.newLoader();
+				final Journal journal = loader.load(batch.file());
+
+				LOGGER.info("processing load journal...");
+				final String now = new DateTime().toString();
+				final List<Map> invoices = Lists.newArrayList();
+				while (journal.hasNext()) {
+					final Record record = journal.next();
+					if (record.isOk()) {
+						LOGGER.info("loaded '{}'", record.id());
+						final Map<String, Object> patch = Maps.newHashMap();
+						patch.put("id", record.id());
+						patch.put("synchronized", now);
+						invoices.add(patch);
+					} else {
+						LOGGER.error(record.message());
+					}
+				}
+				if (invoices.size() > 0) {
+					LOGGER.info("patching resources...");
+					restResource.patch(invoices);
+				} else {
+					LOGGER.info("no invoices were loaded, patching skipped");
+				}
 			} else {
-				LOGGER.info("no invoices were loaded, patching skipped");
+				LOGGER.info("not items found");
 			}
 			LOGGER.info("FINISHED load");
 		} catch (Exception e) {
