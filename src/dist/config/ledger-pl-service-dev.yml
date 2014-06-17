@@ -30,7 +30,7 @@ logging:
     enabled: true
     threshold: DEBUG
     currentLogFilename: log/ledger-pl-service.log
-    archivedLogFilenamePattern: log/ledger-pl-service-"%d{yyyy-MM-dd}.log.gz
+    archivedLogFilenamePattern: log/ledger-pl-service-%d{yyyy-MM-dd}.log.gz
     archivedFileCount: 30
 
 jsonPrettyPrint: true
