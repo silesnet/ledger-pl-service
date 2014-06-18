@@ -158,7 +158,7 @@ Class InsertClass
     Else
       customer.Osoba = True
       customer.OsobaImie = name(data.Item("name"))
-      customer.OsobaNazwisko = surName(data.Item("name"))
+      customer.OsobaNazwisko = surname(data.Item("name"))
       customer.NazwaPelna = data.Item("fullName")
       customer.WlascicielPesel = data.Item("publicId")
     End If
@@ -244,7 +244,7 @@ Class InsertClass
       End If
       customer.Osoba = True
       customer.OsobaImie = name(data.Item("name"))
-      customer.OsobaNazwisko = surName(data.Item("name"))
+      customer.OsobaNazwisko = surname(data.Item("name"))
       customer.NazwaPelna = data.Item("fullName")
       customer.WlascicielPesel = data.Item("publicId")
       customer.Nazwa = ""
@@ -255,8 +255,8 @@ Class InsertClass
     customer.Zamknij
   End Sub
 
-  Private Function surName(fullName)
-    surName = Left(fullName, InStr(fullName, " ") - 1)
+  Private Function surname(fullName)
+    surname = Left(fullName, InStr(fullName, " ") - 1)
   End Function
 
   Private Function name(fullName)
@@ -358,17 +358,20 @@ End Class
 
 Class FakeInsertGtClass
   Public Function validateInvoice(doc)
-    validateInvoice = 1
+    validateInvoice = doc.Item("number")
   End Function
 
   Public Sub addInvoice(doc)
   End Sub
 
   Public Function validateCustomer(doc)
-    validateCustomer = 2
+    validateCustomer = doc.Item("id")
   End Function
 
   Public Sub addCustomer(doc)
+  End Sub
+
+  Public Sub updateCustomer(doc)
   End Sub
 End Class
 
