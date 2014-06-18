@@ -62,7 +62,7 @@ public class LoadService implements Runnable {
 					LOGGER.info("patching resources...");
 					restResource.patch(invoices);
 				} else {
-					LOGGER.info("no invoices were loaded, patching skipped");
+					LOGGER.info("no items were loaded, patching skipped");
 				}
 			} else {
 				LOGGER.info("not items found");
