@@ -7,6 +7,7 @@ import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.client.JerseyClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
+import com.yammer.dropwizard.util.Duration;
 import net.snet.ledger.resources.LedgerPlResource;
 import net.snet.ledger.service.*;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -62,7 +63,8 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 					.withLoadCommand(conf.getLoadInvoiceCmd())
 					.build();
 		final LoadService loadInvoices = loadServiceFactory.newLoadService(loadInvoicesConfig);
-		executorService.scheduleWithFixedDelay(loadInvoices, 1000, conf.getInvoicePollDelay(), TimeUnit.MILLISECONDS);
+		executorService.scheduleWithFixedDelay(loadInvoices, Duration.seconds(2).toMilliseconds(),
+				conf.getInvoicePollDelay().toMilliseconds(), TimeUnit.MILLISECONDS);
 
 		final LoadServiceConfig loadCustomersConfig = new LoadServiceConfig.Builder()
 				.withPollUrl(conf.getCustomerPollUrl())
@@ -71,7 +73,8 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 				.withLoadCommand(conf.getLoadCustomerCmd())
 				.build();
 		final LoadService loadCustomers = loadServiceFactory.newLoadService(loadCustomersConfig);
-		executorService.scheduleWithFixedDelay(loadCustomers, 500, conf.getCustomerPollDelay(), TimeUnit.MILLISECONDS);
+		executorService.scheduleWithFixedDelay(loadCustomers, Duration.seconds(1).toMilliseconds(),
+				conf.getCustomerPollDelay().toMilliseconds(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
 			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);

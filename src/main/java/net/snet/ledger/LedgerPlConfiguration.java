@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.client.JerseyClientConfiguration;
 import com.yammer.dropwizard.config.Configuration;
 import com.yammer.dropwizard.config.LoggingConfiguration;
+import com.yammer.dropwizard.util.Duration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,7 @@ public class LedgerPlConfiguration extends Configuration {
 
 	@Valid
 	@JsonProperty
-	private long invoicePollDelay = 30;
+	private Duration invoicePollDelay = Duration.minutes(10);
 
 	@Valid
 	@JsonProperty
@@ -35,7 +36,7 @@ public class LedgerPlConfiguration extends Configuration {
 
 	@Valid
 	@JsonProperty
-	private long customerPollDelay = 1;
+	private Duration customerPollDelay = Duration.seconds(5);
 
 	@Valid
 	@JsonProperty
@@ -83,7 +84,7 @@ public class LedgerPlConfiguration extends Configuration {
 		return httpClient;
 	}
 
-	public long getInvoicePollDelay() {
+	public Duration getInvoicePollDelay() {
 		return invoicePollDelay;
 	}
 
@@ -91,7 +92,7 @@ public class LedgerPlConfiguration extends Configuration {
 		return invoicePollUrl;
 	}
 
-	public long getCustomerPollDelay() {
+	public Duration getCustomerPollDelay() {
 		return customerPollDelay;
 	}
 

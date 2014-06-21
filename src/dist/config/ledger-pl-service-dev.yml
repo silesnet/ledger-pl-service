@@ -7,12 +7,12 @@ insertVatMap:
   8: 100002
   23: 100001
 
-invoicePollDelay: 2000
+invoicePollDelay: 10m
 invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load
 invoiceBatchPrefix: work/invoice-pl-load-
 loadInvoiceCmd: bin/load-invoices.cmd
 
-customerPollDelay: 1000
+customerPollDelay: 5s
 customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
 customerBatchPrefix: work/customer-pl-load-
 loadCustomerCmd: bin/load-customers.cmd
