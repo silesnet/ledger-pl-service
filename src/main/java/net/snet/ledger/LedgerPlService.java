@@ -8,6 +8,7 @@ import com.yammer.dropwizard.client.JerseyClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.util.Duration;
+import net.snet.ledger.health.AccountantHealthCheck;
 import net.snet.ledger.resources.LedgerPlResource;
 import net.snet.ledger.service.*;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -42,7 +44,7 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
   }
 
   @Override
-  public void run(LedgerPlConfiguration conf, Environment env) throws ClassNotFoundException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, KeyManagementException {
+  public void run(LedgerPlConfiguration conf, Environment env) throws ClassNotFoundException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, KeyManagementException, URISyntaxException {
 		LOGGER.debug("Application home '{}'", conf.getAppHome());
 
 		final Client httpClient =
@@ -80,6 +82,8 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);
 		}
 		env.addResource(new LedgerPlResource());
+		env.addHealthCheck(new AccountantHealthCheck("accountant-service", httpClient, conf.getAccountantHealthCheckUri()));
+		env.addHealthCheck(new AccountantHealthCheck("crm-service", httpClient, conf.getCrmHealthCheckUri()));
 	}
 
 	private SchemeRegistry schemeRegistry() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

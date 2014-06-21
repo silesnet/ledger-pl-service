@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 public class LedgerPlConfiguration extends Configuration {
@@ -32,11 +34,21 @@ public class LedgerPlConfiguration extends Configuration {
 	@Valid
 	@JsonProperty
 	@NotNull
+	private String accountantHealthCheckUri;
+
+	@Valid
+	@JsonProperty
+	@NotNull
 	private String invoicePollUrl;
 
 	@Valid
 	@JsonProperty
 	private Duration customerPollDelay = Duration.seconds(5);
+
+	@Valid
+	@JsonProperty
+	@NotNull
+	private String crmHealthCheckUri;
 
 	@Valid
 	@JsonProperty
@@ -92,12 +104,20 @@ public class LedgerPlConfiguration extends Configuration {
 		return invoicePollUrl;
 	}
 
+	public URI getAccountantHealthCheckUri() throws URISyntaxException {
+		return new URI(accountantHealthCheckUri);
+	}
+
 	public Duration getCustomerPollDelay() {
 		return customerPollDelay;
 	}
 
 	public String getCustomerPollUrl() {
 		return customerPollUrl;
+	}
+
+	public URI getCrmHealthCheckUri() throws URISyntaxException {
+		return new URI(crmHealthCheckUri);
 	}
 
 	public File getInvoiceBatchPrefix() {

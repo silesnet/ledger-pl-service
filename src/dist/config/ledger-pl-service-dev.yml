@@ -1,5 +1,9 @@
 appHome: ".."
 
+http:
+  port: 8080
+  adminPort: 8081
+
 insertGtConfig: config/Subiekt.xml
 accountantName: Jan Kowalski
 insertVatMap:
@@ -11,11 +15,13 @@ invoicePollDelay: 10m
 invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load
 invoiceBatchPrefix: work/invoice-pl-load-
 loadInvoiceCmd: bin/load-invoices.cmd
+accountantHealthCheckUri: http://localhost:8090/ping
 
 customerPollDelay: 5s
 customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
 customerBatchPrefix: work/customer-pl-load-
 loadCustomerCmd: bin/load-customers.cmd
+crmHealthCheckUri: http://localhost:8090/ping
 
 httpClient:
   timeout: 60s
