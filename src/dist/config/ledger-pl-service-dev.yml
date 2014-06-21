@@ -32,5 +32,10 @@ logging:
     currentLogFilename: log/ledger-pl-service.log
     archivedLogFilenamePattern: log/ledger-pl-service-%d{yyyy-MM-dd}.log.gz
     archivedFileCount: 30
+  syslog:
+    enabled: true
+    threshold: INFO
+    host: localhost
+    facility: local0
 
 jsonPrettyPrint: true
