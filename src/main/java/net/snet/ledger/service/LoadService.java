@@ -65,7 +65,7 @@ public class LoadService implements Runnable {
 					LOGGER.info("no items were loaded, patching skipped");
 				}
 			} else {
-				LOGGER.info("not items found");
+				LOGGER.info("no items found");
 			}
 			LOGGER.info("FINISHED load");
 		} catch (Exception e) {
