@@ -87,8 +87,8 @@ Sub testValidateCustomer
   assertNotValidCustomer ins, customer, "address.city added"
   address.Add "postalCode", "12345"
   assertNotValidCustomer ins, customer, "address.postalCode added"
-  customer.Add "email", "name@server.com"
-  assertNotValidCustomer ins, customer, "email added"
+  ' customer.Add "email", "name@server.com"
+  ' assertNotValidCustomer ins, customer, "email added"
   customer.Add "publicId", "12345"
   assertValidCustomer ins, customer, "final validation"
   ' WScript.Echo dumpMap(customer, 0)

@@ -119,7 +119,7 @@ Class InsertClass
     assertHasLength address, "street", "'address.street' is missing"
     assertHasLength address, "city", "'address.city' is missing"
     assertHasLength address, "postalCode", "'address.postalCode' is missing"
-    assertHasLength data, "email", "'email' is missing"
+    ' assertHasLength data, "email", "'email' is missing"
     assertHasLength data, "publicId", "'publicId' is missing"
     validateCustomer = data.Item("id")
   End Function
@@ -139,7 +139,9 @@ Class InsertClass
     customer.Miejscowosc = address.Item("city")
     customer.KodPocztowy = address.Item("postalCode")
     customer.Panstwo = gtaPanstwoPL
-    customer.Email = data.Item("email")
+    If data.Exists("email") Then
+      customer.Email = data.Item("email")
+    End If
     If data.Exists("phone") Then
       Set phone = customer.Telefony.Dodaj("")
       phone.Numer = data.Item("phone")
@@ -179,7 +181,9 @@ Class InsertClass
     customer.Miejscowosc = address.Item("city")
     customer.KodPocztowy = address.Item("postalCode")
     customer.Panstwo = gtaPanstwoPL
-    customer.Email = data.Item("email")
+    If data.Exists("email") Then
+      customer.Email = data.Item("email")
+    End If
     If data.Exists("phone") Then
       updated = False
       For i = 1 To customer.Telefony.Liczba
