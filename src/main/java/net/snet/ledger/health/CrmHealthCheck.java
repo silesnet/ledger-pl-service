@@ -1,7 +1,7 @@
 package net.snet.ledger.health;
 
+import com.codahale.metrics.health.HealthCheck;
 import com.sun.jersey.api.client.Client;
-import com.yammer.metrics.core.HealthCheck;
 
 import java.net.URI;
 
@@ -13,14 +13,14 @@ public class CrmHealthCheck extends HealthCheck {
 	private final Client httpClient;
 	private final URI crmUri;
 
-	public CrmHealthCheck(String name, Client httpClient, URI crmUri) {
-		super(name);
+	public CrmHealthCheck(Client httpClient, URI crmUri) {
+		super();
 		this.httpClient = httpClient;
 		this.crmUri = crmUri;
 	}
 
 	@Override
-	protected Result check() throws Exception {
+	protected HealthCheck.Result check() throws Exception {
 		final String pong = httpClient.resource(crmUri).get(String.class);
 		if (null != pong) {
 			return Result.healthy();

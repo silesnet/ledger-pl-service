@@ -1,8 +1,16 @@
 appHome: ".."
 
-http:
-  port: 8080
-  adminPort: 8081
+#http:
+#  port: 8080
+#  adminPort: 8081
+
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 9090
 
 insertGtConfig: config/Subiekt.xml
 accountantName: Jan Kowalski
@@ -26,22 +34,22 @@ crmHealthCheckUri: http://localhost:8090/ping
 httpClient:
   timeout: 60s
 
-logging:
-  level: INFO
-  loggers:
-    "net.snet.ledger": DEBUG
-  console:
-    logFormat: "%d{yyyyMMdd HH:mm:ss.SSS} %5p %m%n"
-  file:
-    enabled: true
-    threshold: DEBUG
-    currentLogFilename: log/ledger-pl-service.log
-    archivedLogFilenamePattern: log/ledger-pl-service-%d{yyyy-MM-dd}.log.gz
-    archivedFileCount: 30
-  syslog:
-    enabled: true
-    threshold: INFO
-    host: localhost
-    facility: local0
+#logging:
+#  level: INFO
+#  loggers:
+#    "net.snet.ledger": DEBUG
+#  console:
+#    logFormat: "%d{yyyyMMdd HH:mm:ss.SSS} %5p %m%n"
+#  file:
+#    enabled: true
+#    threshold: DEBUG
+#    currentLogFilename: log/ledger-pl-service.log
+#    archivedLogFilenamePattern: log/ledger-pl-service-%d{yyyy-MM-dd}.log.gz
+#    archivedFileCount: 30
+#  syslog:
+#    enabled: true
+#    threshold: INFO
+#    host: localhost
+#    facility: local0
 
 jsonPrettyPrint: true

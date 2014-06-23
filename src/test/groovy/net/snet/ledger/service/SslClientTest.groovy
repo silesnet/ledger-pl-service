@@ -2,7 +2,7 @@ package net.snet.ledger.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.sun.jersey.api.client.Client
-import com.yammer.dropwizard.client.JerseyClientBuilder
+import io.dropwizard.client.JerseyClientBuilder
 import org.apache.http.conn.scheme.PlainSocketFactory
 import org.apache.http.conn.scheme.Scheme
 import org.apache.http.conn.scheme.SchemeRegistry

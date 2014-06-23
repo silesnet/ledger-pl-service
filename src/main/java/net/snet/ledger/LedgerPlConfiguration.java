@@ -1,10 +1,10 @@
 package net.snet.ledger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yammer.dropwizard.client.JerseyClientConfiguration;
-import com.yammer.dropwizard.config.Configuration;
-import com.yammer.dropwizard.config.LoggingConfiguration;
-import com.yammer.dropwizard.util.Duration;
+import io.dropwizard.client.JerseyClientConfiguration;
+import io.dropwizard.Configuration;
+//import io.dropwizard.configuration.LoggingConfiguration;
+import io.dropwizard.util.Duration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -156,18 +156,18 @@ public class LedgerPlConfiguration extends Configuration {
 		}
 	}
 
-	@Override
-	public LoggingConfiguration getLoggingConfiguration() {
-		final LoggingConfiguration configuration = super.getLoggingConfiguration();
-		final LoggingConfiguration.FileConfiguration fc = configuration.getFileConfiguration();
-		if (fc != null) {
-			fc.setCurrentLogFilename(path(fc.getCurrentLogFilename()).toString());
-			if (fc.isArchive()) {
-				fc.setArchivedLogFilenamePattern(path(fc.getArchivedLogFilenamePattern()).toString());
-			}
-		}
-		return configuration;
-	}
+//	@Override
+//	public LoggingConfiguration getLoggingConfiguration() {
+//		final LoggingConfiguration configuration = super.getLoggingConfiguration();
+//		final LoggingConfiguration.FileConfiguration fc = configuration.getFileConfiguration();
+//		if (fc != null) {
+//			fc.setCurrentLogFilename(path(fc.getCurrentLogFilename()).toString());
+//			if (fc.isArchive()) {
+//				fc.setArchivedLogFilenamePattern(path(fc.getArchivedLogFilenamePattern()).toString());
+//			}
+//		}
+//		return configuration;
+//	}
 
 	private File path(String path) {
 		return path(new File(path));

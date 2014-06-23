@@ -3,12 +3,14 @@ package net.snet.ledger;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.client.JerseyClientBuilder;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.util.Duration;
+import io.dropwizard.Application;
+import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jackson.Jackson;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.util.Duration;
 import net.snet.ledger.health.AccountantHealthCheck;
+import net.snet.ledger.health.CrmHealthCheck;
 import net.snet.ledger.resources.LedgerPlResource;
 import net.snet.ledger.service.*;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -31,7 +33,7 @@ import java.security.cert.X509Certificate;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class LedgerPlService extends Service<LedgerPlConfiguration> {
+public class LedgerPlService extends Application<LedgerPlConfiguration> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LedgerPlService.class);
 
   public static void main(String[] args) throws Exception {
@@ -40,7 +42,6 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 
   @Override
   public void initialize(Bootstrap<LedgerPlConfiguration> bootstrap) {
-    bootstrap.setName("ledger-pl-service");
   }
 
   @Override
@@ -48,14 +49,14 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 		LOGGER.debug("Application home '{}'", conf.getAppHome());
 
 		final Client httpClient =
-				new JerseyClientBuilder()
+				new JerseyClientBuilder(env)
 					.using(conf.getJerseyClientConfiguration())
 					.using(schemeRegistry())
 					.using(env)
-					.build();
+					.build("ledger-http-client");
 		final LoadServiceFactory loadServiceFactory = new LoadServiceFactory(httpClient, conf.getInsertGtConfig());
 
-		final ScheduledExecutorService executorService = env.managedScheduledExecutorService("loader", 2);
+	  final ScheduledExecutorService executorService = env.lifecycle().scheduledExecutorService("loader").threads(2).build();
 
 		final LoadServiceConfig loadInvoicesConfig =
 				new LoadServiceConfig.Builder()
@@ -79,11 +80,11 @@ public class LedgerPlService extends Service<LedgerPlConfiguration> {
 				conf.getCustomerPollDelay().toMilliseconds(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
-			env.getObjectMapperFactory().enable(SerializationFeature.INDENT_OUTPUT);
+			env.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		}
-		env.addResource(new LedgerPlResource());
-		env.addHealthCheck(new AccountantHealthCheck("accountant-service", httpClient, conf.getAccountantHealthCheckUri()));
-		env.addHealthCheck(new AccountantHealthCheck("crm-service", httpClient, conf.getCrmHealthCheckUri()));
+		env.jersey().register(new LedgerPlResource());
+		env.healthChecks().register("accountant-service", new AccountantHealthCheck(httpClient, conf.getAccountantHealthCheckUri()));
+		env.healthChecks().register("crm-service", new CrmHealthCheck(httpClient, conf.getCrmHealthCheckUri()));
 	}
 
 	private SchemeRegistry schemeRegistry() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
