@@ -1,9 +1,5 @@
 appHome: ".."
 
-#http:
-#  port: 8080
-#  adminPort: 8081
-
 server:
   type: simple
   applicationContextPath: /
@@ -20,13 +16,13 @@ insertVatMap:
   23: 100001
 
 invoicePollDelay: 10m
-invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-load
+invoicePollUrl: http://localhost:8089/invoices?qn=ledger-pl-import
 invoiceBatchPrefix: work/invoice-pl-load-
 loadInvoiceCmd: bin/load-invoices.cmd
 accountantHealthCheckUri: http://localhost:8090/ping
 
 customerPollDelay: 5s
-customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-load
+customerPollUrl: http://localhost:8089/customers?qn=ledger-pl-import
 customerBatchPrefix: work/customer-pl-load-
 loadCustomerCmd: bin/load-customers.cmd
 crmHealthCheckUri: http://localhost:8090/ping
