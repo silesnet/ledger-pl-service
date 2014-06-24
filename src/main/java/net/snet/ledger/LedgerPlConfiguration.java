@@ -1,9 +1,11 @@
 package net.snet.ledger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.Configuration;
-//import io.dropwizard.configuration.LoggingConfiguration;
+import io.dropwizard.client.JerseyClientConfiguration;
+import io.dropwizard.logging.AppenderFactory;
+import io.dropwizard.logging.FileAppenderFactory;
+import io.dropwizard.logging.LoggingFactory;
 import io.dropwizard.util.Duration;
 
 import javax.validation.Valid;
@@ -156,21 +158,23 @@ public class LedgerPlConfiguration extends Configuration {
 		}
 	}
 
-//	@Override
-//	public LoggingConfiguration getLoggingConfiguration() {
-//		final LoggingConfiguration configuration = super.getLoggingConfiguration();
-//		final LoggingConfiguration.FileConfiguration fc = configuration.getFileConfiguration();
-//		if (fc != null) {
-//			fc.setCurrentLogFilename(path(fc.getCurrentLogFilename()).toString());
-//			if (fc.isArchive()) {
-//				fc.setArchivedLogFilenamePattern(path(fc.getArchivedLogFilenamePattern()).toString());
-//			}
-//		}
-//		return configuration;
-//	}
+	@Override
+	public LoggingFactory getLoggingFactory() {
+		final LoggingFactory loggingFactory = super.getLoggingFactory();
+		for (AppenderFactory appenderFactory : loggingFactory.getAppenders()) {
+			if (appenderFactory instanceof FileAppenderFactory) {
+				final FileAppenderFactory fileAppender = (FileAppenderFactory) appenderFactory;
+				fileAppender.setCurrentLogFilename(path(fileAppender.getCurrentLogFilename()));
+				if (fileAppender.isArchive()) {
+					fileAppender.setArchivedLogFilenamePattern(path(fileAppender.getArchivedLogFilenamePattern()));
+				}
+			}
+		}
+		return loggingFactory;
+	}
 
-	private File path(String path) {
-		return path(new File(path));
+	private String path(String path) {
+		return path(new File(path)).toString();
 	}
 
 	private File path(File file) {
