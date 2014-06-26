@@ -2,10 +2,9 @@ package net.snet.ledger.service;
 
 import java.util.List;
 
-/**
- * Created by admin on 2.4.14.
- */
 public interface RestResource {
+	String name();
+
 	List poll();
 
 	void patch(List items);

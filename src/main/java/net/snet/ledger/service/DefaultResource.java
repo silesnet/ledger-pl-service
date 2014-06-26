@@ -14,9 +14,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by admin on 2.4.14.
- */
 public class DefaultResource implements RestResource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultResource.class);
 
@@ -34,6 +31,11 @@ public class DefaultResource implements RestResource {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public String name() {
+		return name;
 	}
 
 	@Override
