@@ -28,50 +28,52 @@ public class LoadService implements Runnable {
 	@Override
 	public void run() {
 		try {
-			LOGGER.info("load STARTED...");
-			LOGGER.info("polling...");
+			LOGGER.debug("load {} STARTED...", restResource.name());
+			LOGGER.debug("polling for {}...", restResource.name());
 			final List items = restResource.poll();
 			if (items.size() > 0) {
-				LOGGER.info("creating batch...");
+				LOGGER.info("{} {} items found", items.size(), restResource.name());
+				LOGGER.info("creating {} batch...", restResource.name());
 				final Batch batch = batchFactory.newBatch();
 				for (Object item : items) {
 					batch.append(mapper.map((Map) item));
 				}
 				batch.trailer(Optional.absent());
 
-				LOGGER.info("loading batch...");
+				LOGGER.info("loading {} batch...", restResource.name());
 				final Loader loader = loaderFactory.newLoader();
 				final Journal journal = loader.load(batch.file());
 
-				LOGGER.info("processing load journal...");
+				LOGGER.info("processing {} load journal...", restResource.name());
 				final String now = new DateTime().toString();
-				final List<Map> updates = Lists.newArrayList();
+				final List<Map> loadedItems = Lists.newArrayList();
+				int loaded = 0;
 				while (journal.hasNext()) {
 					final Record record = journal.next();
-					final Map<String, Object> patch = Maps.newHashMap();
-					patch.put("id", record.id());
 					if (record.isOk()) {
-						LOGGER.info("loaded '{}'", record.id());
+						loaded++;
+						LOGGER.info("loaded {}: '{}'", restResource.name(), record.id());
+						final Map<String, Object> patch = Maps.newHashMap();
+						patch.put("id", record.id());
 						patch.put("synchronized", now);
+						loadedItems.add(patch);
 					} else {
-						LOGGER.info("failed to load '{}'", record.id());
 						LOGGER.error(record.message());
-						patch.put("synchronized", null);
 					}
-					updates.add(patch);
 				}
-				if (updates.size() > 0) {
-					LOGGER.info("patching resources...");
-					restResource.patch(updates);
+				if (loadedItems.size() > 0) {
+					LOGGER.info("patching {} resources...", restResource.name());
+					restResource.patch(loadedItems);
 				} else {
-					LOGGER.info("no items were loaded, patching skipped");
+					LOGGER.info("no {} items were loaded, patching skipped", restResource.name());
 				}
+				LOGGER.info("loaded {} of {} {}", loaded, items.size(), restResource.name());
 			} else {
-				LOGGER.info("no items found");
+				LOGGER.debug("no {} items found", restResource.name());
 			}
-			LOGGER.info("FINISHED load");
+			LOGGER.debug("FINISHED load {}", restResource.name());
 		} catch (Exception e) {
-			LOGGER.error("FAILED load", e);
+			LOGGER.error("FAILED load " + restResource.name(), e);
 		}
 	}
 }
