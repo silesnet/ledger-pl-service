@@ -45,22 +45,24 @@ public class LoadService implements Runnable {
 
 				LOGGER.info("processing load journal...");
 				final String now = new DateTime().toString();
-				final List<Map> invoices = Lists.newArrayList();
+				final List<Map> updates = Lists.newArrayList();
 				while (journal.hasNext()) {
 					final Record record = journal.next();
+					final Map<String, Object> patch = Maps.newHashMap();
+					patch.put("id", record.id());
 					if (record.isOk()) {
 						LOGGER.info("loaded '{}'", record.id());
-						final Map<String, Object> patch = Maps.newHashMap();
-						patch.put("id", record.id());
 						patch.put("synchronized", now);
-						invoices.add(patch);
 					} else {
+						LOGGER.info("failed to load '{}'", record.id());
 						LOGGER.error(record.message());
+						patch.put("synchronized", null);
 					}
+					updates.add(patch);
 				}
-				if (invoices.size() > 0) {
+				if (updates.size() > 0) {
 					LOGGER.info("patching resources...");
-					restResource.patch(invoices);
+					restResource.patch(updates);
 				} else {
 					LOGGER.info("no items were loaded, patching skipped");
 				}
