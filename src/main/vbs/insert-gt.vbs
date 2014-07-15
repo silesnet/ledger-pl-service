@@ -50,6 +50,7 @@ Class InsertClass
 
   Public Function validateInvoice(data)
     assertHasLength data, "number", "invoice number 'number' is missing"
+    assertHasLength data, "originalNumber", "original invoice number 'number' is missing"
     assertHasLength data, "customerId", "customer id 'customerId' is missing"
     assertIsDate data, "invoiceDate", "invoice date 'invoiceDate' is invalid or missing"
     assertIsDate data, "dueDate", "due date 'dueDate' is invalid or missing"
@@ -69,7 +70,7 @@ Class InsertClass
         assertIsNumeric itemData, "vatPct", "vat percentage 'items[].vatPct' is invalid or missing"
       Next
     End If
-    validateInvoice = data.Item("number")
+    validateInvoice = data.Item("originalNumber")
   End Function
 
   Public Sub addInvoice(data)
@@ -411,6 +412,6 @@ Class CustomerSinkClass
       insertGt.addCustomer(doc)
     Else
       insertGt.updateCustomer(doc)
-    End If      
+    End If
   End Sub
 End Class

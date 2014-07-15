@@ -193,6 +193,8 @@ Sub testValidateInvoice
   assertNotValidInvoice ins, invoice, "empty"
   invoice.Add "number", "1017"
   assertNotValidInvoice ins, invoice, "number added"
+  invoice.Add "originalNumber", "201401017"
+  assertNotValidInvoice ins, invoice, "originalNumber added"
   invoice.Add "customerId", "ABC"
   assertNotValidInvoice ins, invoice, "customerId added"
   invoice.Add "invoiceDate", "2014-04-15"
@@ -222,7 +224,7 @@ Sub testValidateInvoice
   item.Add "vatPct", 23
   assertValidInvoice ins, invoice, "item.vatPct added"
   id = ins.validateInvoice(invoice)
-  assert (id = "1017"), "fetch invoice number"
+  assert (id = "201401017"), "fetch invoice number"
   item.Item("name") = "123456789012345678901234567890123456789012345678901"
   assertNotValidInvoice ins, invoice, "item.name to 50 chars"
   item.Item("name") = "12345678901234567890123456789012345678901234567890"
@@ -282,7 +284,6 @@ Private Function updatedSampleAddress()
   address.Item("postalCode") = 99999
   Set updatedSampleAddress = address
 End Function
-
 
 Private Sub assertValidInvoice(ins, inv, msg)
   Dim error
