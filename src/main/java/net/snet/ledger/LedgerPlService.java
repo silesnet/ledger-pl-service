@@ -62,7 +62,7 @@ public class LedgerPlService extends Application<LedgerPlConfiguration> {
 					.withLoadCommand(conf.getLoadInvoiceCmd())
 					.build();
 		final LoadService loadInvoices = loadServiceFactory.newLoadService(loadInvoicesConfig);
-		executorService.scheduleWithFixedDelay(loadInvoices, Duration.seconds(2).toMilliseconds(),
+		executorService.scheduleWithFixedDelay(loadInvoices, conf.getInvoicePollDelay().toMilliseconds(),
 				conf.getInvoicePollDelay().toMilliseconds(), TimeUnit.MILLISECONDS);
 
 		final LoadServiceConfig loadCustomersConfig = new LoadServiceConfig.Builder()
@@ -72,7 +72,7 @@ public class LedgerPlService extends Application<LedgerPlConfiguration> {
 				.withLoadCommand(conf.getLoadCustomerCmd())
 				.build();
 		final LoadService loadCustomers = loadServiceFactory.newLoadService(loadCustomersConfig);
-		executorService.scheduleWithFixedDelay(loadCustomers, Duration.seconds(1).toMilliseconds(),
+		executorService.scheduleWithFixedDelay(loadCustomers, conf.getCustomerPollDelay().toMilliseconds(),
 				conf.getCustomerPollDelay().toMilliseconds(), TimeUnit.MILLISECONDS);
 
 		if (conf.getJsonPrettyPrint()) {
