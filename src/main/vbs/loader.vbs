@@ -108,7 +108,7 @@ Class LoaderClass
   End Function
 
   Function errorMessage
-    errorMessage = "error: '" & Err.Number & ": " & Err.Source & ": " & Replace(Err.Description, vbCrLf, "") & "'"
+    errorMessage = "error: '" & Err.Number & ": " & Err.Source & ": " & Replace(Err.Description, vbCrLf, " ") & "'"
   End Function
 
   Sub storeRecord(docId, message)
