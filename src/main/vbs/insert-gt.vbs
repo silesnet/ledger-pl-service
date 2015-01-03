@@ -48,6 +48,10 @@ Class InsertClass
     isInitialized = True
   End Sub
 
+  Public Function invoiceId(data)
+    invoiceId = data.Item("originalNumber")
+  End Function
+
   Public Function validateInvoice(data)
     assertHasLength data, "number", "invoice number 'number' is missing"
     assertHasLength data, "originalNumber", "original invoice number 'number' is missing"
@@ -106,6 +110,10 @@ Class InsertClass
     invoice.Zapisz
     invoice.Zamknij
   End Sub
+
+  Public Function customerId(data)
+    customerId = data.Item("id")
+  End Function
 
   Public Function validateCustomer(data)
     assertHasLength data, "surrogateId", "'surrogateId' is missing"
@@ -362,6 +370,10 @@ Class InsertClass
 End Class
 
 Class FakeInsertGtClass
+  Public Function invoiceId(data)
+    invoiceId = data.Item("number")
+  End Function
+
   Public Function validateInvoice(doc)
     validateInvoice = doc.Item("number")
   End Function
@@ -369,8 +381,12 @@ Class FakeInsertGtClass
   Public Sub addInvoice(doc)
   End Sub
 
+  Public Function customerId(data)
+    customerId = data.Item("number")
+  End Function
+
   Public Function validateCustomer(doc)
-    validateCustomer = doc.Item("id")
+    validateCustomer = doc.Item("number")
   End Function
 
   Public Sub addCustomer(doc)
@@ -387,6 +403,10 @@ Class InvoiceSinkClass
     Set insertGt = aInsertGt
   End Sub
 
+  Public Function docId(doc)
+    docId = insertGt.invoiceId(doc)
+  End Function
+
   Public Function validate(doc)
     validate = insertGt.validateInvoice(doc)
   End Function
@@ -402,6 +422,10 @@ Class CustomerSinkClass
   Public Sub setInsertGt(aInsertGt)
     Set insertGt = aInsertGt
   End Sub
+
+  Public Function docId(doc)
+    docId = insertGt.customerId(doc)
+  End Function
 
   Public Function validate(doc)
     validate = insertGt.validateCustomer(doc)

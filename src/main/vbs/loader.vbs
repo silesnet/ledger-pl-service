@@ -47,8 +47,10 @@ Class LoaderClass
       noFatalError "checking next document"
       Set doc = source.nextDocument()
       noFatalError "reading document"
+      docId = sink.docId(doc)
+      noFatalError "fetching document id"
       documents = documents + 1
-      docId = sink.validate(doc)
+      sink.validate(doc)
       If noError("validating document", docId) Then
         sink.update(doc)
         If noError("loading document", docId) Then
