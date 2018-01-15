@@ -55,7 +55,7 @@ End Select
 debug "configuring journal '" & journalFile & "'..."
 Set journal = journalOf(journalFile)
 
-debug "loading invoices STARTED..."
+debug "loading '" & sinkName & "' STARTED..."
 Set loader = loaderOf(source, sink, journal)
 loader.loadAll
 
