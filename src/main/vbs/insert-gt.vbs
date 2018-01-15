@@ -260,7 +260,7 @@ Class InsertClass
       customer.OsobaNazwisko = surname(data.Item("name"))
       customer.NazwaPelna = data.Item("fullName")
       customer.WlascicielPesel = data.Item("publicId")
-      customer.Nazwa = ""
+      customer.Nazwa = data.Item("fullName")
       customer.NIP = ""
       customer.REGON = ""
     End If
