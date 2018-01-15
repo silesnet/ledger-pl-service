@@ -252,7 +252,7 @@ Class InsertClass
       customer.OsobaNazwisko = ""
     Else
       If Not wasResidential Then
-        debug "switching from business to esidential"
+        debug "switching from business to residential"
         Err.Raise 1001, "updateCustomer", "cannot switch business customer to residential"
       End If
       customer.Osoba = True
